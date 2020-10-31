@@ -1,14 +1,15 @@
-chcp 936 & cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP²âËÙ
+chcp 936 & cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIPæµ‹é€Ÿ
 setlocal enabledelayedexpansion
-TITLE »ñÈ¡cloudflare IP
+TITLE è·å–cloudflare IP
 curl https://anycast.freecdn.workers.dev -o ip1.txt -#
 set numN=%random%
 set /a numN=numN%%50+50
 findstr "%numN%" ip1.txt > ip.txt
-Call :È¡Ç°50¸ö ip.txt
+Call :å–å‰50ä¸ª ip.txt
+cls
 echo =========================================================
-TITLE °üº¬%numN% Ëæ»úIP²âËÙÖĞ¡­¡­¡­¡­
-echo °üº¬%numN% Ëæ»úIP²âËÙÖĞ¡­¡­¡­¡­
+TITLE åŒ…å«%numN% éšæœºIPæµ‹é€Ÿä¸­â€¦â€¦â€¦â€¦
+echo åŒ…å«%numN% éšæœºIPæµ‹é€Ÿä¸­â€¦â€¦â€¦â€¦
 echo =========================================================
 if EXIST "%~dp0temp" rd /s /q "%~dp0temp"
 mkdir temp
@@ -16,31 +17,31 @@ echo WScript.sleep 500 > sleep.vbs
 for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
 start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/__down?bytes=1000000000 -o temp/%%a -s --connect-timeout 2 --max-time 10
-echo %%a Æô¶¯²âËÙ
+echo %%a å¯åŠ¨æµ‹é€Ÿ
 )
 echo =========================================================
-TITLE µÈ´ı°üº¬%numN% Ëæ»úIP ²âËÙ½ø³Ì½áÊø,¡­¡­¡­¡­´óÔ¼ĞèÒª15Ãë
-echo µÈ´ı°üº¬%numN% Ëæ»úIP ²âËÙ½ø³Ì½áÊø,¡­¡­¡­¡­´óÔ¼ĞèÒª15Ãë
+TITLE ç­‰å¾…åŒ…å«%numN% éšæœºIP æµ‹é€Ÿè¿›ç¨‹ç»“æŸ,â€¦â€¦â€¦â€¦å¤§çº¦éœ€è¦15ç§’
+echo ç­‰å¾…åŒ…å«%numN% éšæœºIP æµ‹é€Ÿè¿›ç¨‹ç»“æŸ,â€¦â€¦â€¦â€¦å¤§çº¦éœ€è¦15ç§’
 echo =========================================================
 choice /t 15 /d y /n >nul
 cls
 echo =========================================================
-TITLE °üº¬%numN% Ëæ»úIP²âËÙÅÅĞò½á¹û£¨ÇëÑ¡ÔñÅÅ×îÇ°ÃæµÄIP!£©
-echo °üº¬%numN% Ëæ»úIP²âËÙÅÅĞò½á¹û£¨ÇëÑ¡ÔñÅÅ×îÇ°ÃæµÄIP!£©
+TITLE åŒ…å«%numN% éšæœºIPæµ‹é€Ÿæ’åºç»“æœï¼ˆè¯·é€‰æ‹©æ’æœ€å‰é¢çš„IP!ï¼‰
+echo åŒ…å«%numN% éšæœºIPæµ‹é€Ÿæ’åºç»“æœï¼ˆè¯·é€‰æ‹©æ’æœ€å‰é¢çš„IP!ï¼‰
 echo ---------------------------------------------------------
-echo Ê±¼ä			µ¥Î»Ê±¼äÏÂÔØ×Ö½Ú	IP
+echo æ—¶é—´			å•ä½æ—¶é—´ä¸‹è½½å­—èŠ‚	IP
 echo ---------------------------------------------------------
 dir /o:-s temp > ip1.txt
 findstr "%numN%" ip1.txt > ip.txt
 type ip.txt
 echo ---------------------------------------------------------
-echo ÇëÑ¡ÔñÅÅ×îÇ°ÃæµÄIP!
+echo è¯·é€‰æ‹©æ’æœ€å‰é¢çš„IP!
 echo =========================================================
 rd /s /q "%~dp0temp"
 del ip.txt ip1.txt sleep.vbs ip.txt_tmp.txt
 pause&goto :eof
 
-:È¡Ç°50¸ö
+:å–å‰50ä¸ª
 sort %1>%1_tmp.txt
 echo.>%1
 set count=0
