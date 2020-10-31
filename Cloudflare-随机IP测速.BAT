@@ -5,7 +5,7 @@ curl https://anycast.freecdn.workers.dev -o ip1.txt -#
 set numN=%random%
 set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
-Call :取前99个 ip.txt
+Call :取前N个 ip.txt
 CLS
 echo =========================================================
 TITLE  随机选中%count%个IP测速中…………
@@ -41,7 +41,7 @@ rd /s /q "%~dp0temp"
 del ip.txt ip1.txt sleep.vbs ip.txt_tmp.txt
 pause&goto :eof
 
-:取前99个
+:取前N个
 sort %1>%1_tmp.txt
 echo.>%1
 set count=0
