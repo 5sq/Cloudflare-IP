@@ -3,13 +3,13 @@ setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
 curl https://anycast.freecdn.workers.dev -o ip1.txt -#
 set numN=%random%
-set /a numN=numN%%50+50
+set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
-Call :取前50个 ip.txt
+Call :取前99个 ip.txt
 CLS
 echo =========================================================
-TITLE  随机IP测速中…………
-echo  随机IP测速中…………
+TITLE  随机选中%count%个IP测速中…………
+echo 随机选中%count%个IP测速中…………
 echo =========================================================
 if EXIST "%~dp0temp" rd /s /q "%~dp0temp"
 mkdir temp
@@ -24,6 +24,8 @@ TITLE 等待 随机IP 测速进程结束,…………大约需要15秒
 echo 等待 随机IP 测速进程结束,…………大约需要15秒
 echo =========================================================
 choice /t 15 /d y /n >nul
+dir /o:-s temp > ip1.txt
+findstr "%numN%" ip1.txt > ip.txt
 cls
 echo =========================================================
 TITLE  随机IP测速排序结果（请选择排最前面的IP!）
@@ -31,8 +33,6 @@ echo  随机IP测速排序结果（请选择排最前面的IP!）
 echo ---------------------------------------------------------
 echo 时间			单位时间下载字节	IP
 echo ---------------------------------------------------------
-dir /o:-s temp > ip1.txt
-findstr "%numN%" ip1.txt > ip.txt
 type ip.txt
 echo ---------------------------------------------------------
 echo 请选择排最前面的IP!
@@ -41,16 +41,15 @@ rd /s /q "%~dp0temp"
 del ip.txt ip1.txt sleep.vbs ip.txt_tmp.txt
 pause&goto :eof
 
-:取前50个
+:取前99个
 sort %1>%1_tmp.txt
 echo.>%1
 set count=0
 for /f "tokens=1,2" %%a in (%1_tmp.txt) do (
 echo %%a >> %1
 set /a count+=1
-if !count! equ 50 goto :eof
+if !count! equ 99 del %1_tmp.txt >nul&&goto :eof
 )
-del %1_tmp.txt >nul
 goto :eof
 
 pause&goto :eof
