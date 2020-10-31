@@ -1,20 +1,20 @@
-chcp 936 & cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP²âËÙ
+chcp 936 & cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIPæµ‹é€Ÿ
 setlocal enabledelayedexpansion
-TITLE »ñÈ¡cloudflare IP
+TITLE è·å–cloudflare IP
 curl https://anycast.freecdn.workers.dev -o ip1.txt -#
-TITLE »ñÈ¡cloudflare¿ÉÓÃIP¶Î
-Call :»ñÈ¡IP¶Î ip1.txt &&Call :É¾³ıÖØ¸´ĞĞ ip2.txt
-TITLE µ±Ç°cloudflare¿ÉÓÃIP¶Î(ÍÆ¼öÑ¡Ôñ£º104.19.»ò172.67.)
-echo µ±Ç°cloudflare¿ÉÓÃIP¶Î(ÍÆ¼öÑ¡Ôñ£º104.19.»ò172.67.)£º
+TITLE è·å–cloudflareå¯ç”¨IPæ®µ
+Call :è·å–IPæ®µ ip1.txt &&Call :åˆ é™¤é‡å¤è¡Œ ip2.txt
+TITLE å½“å‰cloudflareå¯ç”¨IPæ®µ(æ¨èé€‰æ‹©ï¼š104.19.æˆ–172.67.)
+echo å½“å‰cloudflareå¯ç”¨IPæ®µ(æ¨èé€‰æ‹©ï¼š104.19.æˆ–172.67.)ï¼š
 rem type ip2.txt|findstr /I /V "1.1. 1.0. 173.245. 103.21."
-type ip2.txt|findstr "104 172"
+type ip2.txt|findstr "."
 del ip2.txt
-set /p IP-CS=ÇëÊäÈëĞèÒª²âËÙµÄIP¶Î£º
+set /p IP-CS=è¯·è¾“å…¥éœ€è¦æµ‹é€Ÿçš„IPæ®µï¼š
 findstr "%IP-CS%" ip1.txt > ip.txt
-Call :È¡Ç°50¸ö ip.txt
+Call :å–å‰50ä¸ª ip.txt
 echo =========================================================
-TITLE %IP-CS% IP¶Î²âËÙÖĞ¡­¡­¡­¡­
-echo %IP-CS% IP¶Î²âËÙÖĞ¡­¡­¡­¡­
+TITLE %IP-CS% IPæ®µæµ‹é€Ÿä¸­â€¦â€¦â€¦â€¦
+echo %IP-CS% IPæ®µæµ‹é€Ÿä¸­â€¦â€¦â€¦â€¦
 echo =========================================================
 if EXIST "%~dp0temp" rd /s /q "%~dp0temp"
 mkdir temp
@@ -22,51 +22,51 @@ echo WScript.sleep 500 > sleep.vbs
 for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
 start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/__down?bytes=1000000000 -o temp/%%a -s --connect-timeout 2 --max-time 10
-echo %%a Æô¶¯²âËÙ
+echo %%a å¯åŠ¨æµ‹é€Ÿ
 )
 echo =========================================================
-TITLE µÈ´ı%IP-CS% IP¶Î ²âËÙ½ø³Ì½áÊø,¡­¡­¡­¡­´óÔ¼ĞèÒª15Ãë
-echo µÈ´ı%IP-CS% IP¶Î ²âËÙ½ø³Ì½áÊø,¡­¡­¡­¡­´óÔ¼ĞèÒª15Ãë
+TITLE ç­‰å¾…%IP-CS% IPæ®µ æµ‹é€Ÿè¿›ç¨‹ç»“æŸ,â€¦â€¦â€¦â€¦å¤§çº¦éœ€è¦15ç§’
+echo ç­‰å¾…%IP-CS% IPæ®µ æµ‹é€Ÿè¿›ç¨‹ç»“æŸ,â€¦â€¦â€¦â€¦å¤§çº¦éœ€è¦15ç§’
 echo =========================================================
 choice /t 15 /d y /n >nul
 cls
 echo =========================================================
-TITLE %IP-CS% IP¶Î²âËÙÅÅĞò½á¹û£¨ÇëÑ¡ÔñÅÅ×îÇ°ÃæµÄIP!£©
-echo %IP-CS% IP¶Î²âËÙÅÅĞò½á¹û£¨ÇëÑ¡ÔñÅÅ×îÇ°ÃæµÄIP!£©
+TITLE %IP-CS% IPæ®µæµ‹é€Ÿæ’åºç»“æœï¼ˆè¯·é€‰æ‹©æ’æœ€å‰é¢çš„IP!ï¼‰
+echo %IP-CS% IPæ®µæµ‹é€Ÿæ’åºç»“æœï¼ˆè¯·é€‰æ‹©æ’æœ€å‰é¢çš„IP!ï¼‰
 echo ---------------------------------------------------------
-echo Ê±¼ä			µ¥Î»Ê±¼äÏÂÔØ×Ö½Ú	IP
+echo æ—¶é—´			å•ä½æ—¶é—´ä¸‹è½½å­—èŠ‚	IP
 echo ---------------------------------------------------------
 dir /o:-s temp > ip1.txt
 findstr "%IP-CS%" ip1.txt > ip.txt
 type ip.txt
 echo ---------------------------------------------------------
-echo ÇëÑ¡ÔñÅÅ×îÇ°ÃæµÄIP!
+echo è¯·é€‰æ‹©æ’æœ€å‰é¢çš„IP!
 echo =========================================================
 rd /s /q "%~dp0temp"
 del ip.txt ip1.txt sleep.vbs
 pause&goto :eof
 
-:É¾³ıÖØ¸´ĞĞ
+:åˆ é™¤é‡å¤è¡Œ
 sort %1>%1_tmp.txt
 echo.>%1
 for /f "delims=" %%i in (%1_tmp.txt) do (if not defined %%i set %%i=A & echo %%i>>%1)
 del %1_tmp.txt >nul
 goto :eof
 
-:»ñÈ¡IP¶Î
+:è·å–IPæ®µ
 sort %1>%1_tmp.txt
 echo.>ip2.txt
 for /f "tokens=1,2 delims=." %%i in (%1_tmp.txt) do (echo %%i.%%j.>>ip2.txt)
 del %1_tmp.txt >nul
 goto :eof
 
-:È¡Ç°50¸ö
+:å–å‰50ä¸ª
 sort %1>%1_tmp.txt
 echo.>%1
 set count=0
 for /f "tokens=1,2" %%a in (%1_tmp.txt) do (
 echo %%a >> %1
-title Ñ¡È¡Ç°50¸öIPµØÖ·ÏÂÔØ²âËÙ
+title é€‰å–å‰50ä¸ªIPåœ°å€ä¸‹è½½æµ‹é€Ÿ
 set /a count+=1
 if !count! equ 50 goto :eof
 )
