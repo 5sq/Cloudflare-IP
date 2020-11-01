@@ -20,8 +20,8 @@ start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.co
 echo %%a 启动测速
 )
 echo =========================================================
-TITLE 等待 随机IP 测速进程结束,…………大约需要15秒
-echo 等待 随机IP 测速进程结束,…………大约需要15秒
+TITLE 等待测速进程结束,…………大约需要15秒
+echo 等待测速进程结束,…………大约需要15秒
 echo =========================================================
 choice /t 15 /d y /n >nul
 dir /o:-s temp > ip1.txt
