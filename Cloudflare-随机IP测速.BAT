@@ -1,4 +1,4 @@
-chcp 936 & cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP测速
+chcp 936 >NUL& cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
 curl https://anycast.freecdn.workers.dev -o ip1.txt -#
@@ -48,7 +48,7 @@ set count=0
 for /f "tokens=1,2" %%a in (%1_tmp.txt) do (
 echo %%a >> %1
 set /a count+=1
-if !count! equ 89 del %1_tmp.txt >nul&&goto :eof
+if !count! equ 66 del %1_tmp.txt >nul&&goto :eof
 )
 goto :eof
 
