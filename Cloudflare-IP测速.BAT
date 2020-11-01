@@ -1,4 +1,4 @@
-chcp 936 & cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP测速
+chcp 936 >NUL & cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
 curl https://anycast.freecdn.workers.dev -o ip1.txt -#
