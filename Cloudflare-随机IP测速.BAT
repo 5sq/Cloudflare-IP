@@ -26,16 +26,17 @@ echo =========================================================
 choice /t 15 /d y /n >nul
 dir /o:-s temp > ip1.txt
 findstr "%numN%" ip1.txt > ip.txt
+Call :N个IP ip.txt
 cls
 echo =========================================================
-TITLE  随机IP测速排序结果（请选择排最前面的IP!）
-echo  随机IP测速排序结果（请选择排最前面的IP!）
+TITLE 测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
+echo  测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
 echo ---------------------------------------------------------
 echo 时间			单位时间下载字节	IP
 echo ---------------------------------------------------------
-type ip.txt
+type ip.txt|findstr ":"
 echo ---------------------------------------------------------
-echo 请选择排最前面的IP!
+echo  测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
 echo =========================================================
 rd /s /q "%~dp0temp"
 del ip.txt ip1.txt sleep.vbs ip.txt_tmp.txt
@@ -50,6 +51,11 @@ echo %%a >> %1
 set /a count+=1
 if !count! equ 99 del %1_tmp.txt >nul&&goto :eof
 )
+goto :eof
+
+:N个IP
+set countIP=0
+for /f "tokens=1,2" %%a in (%1) do (set /a countIP+=1)
 goto :eof
 
 pause&goto :eof
