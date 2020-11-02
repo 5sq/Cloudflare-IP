@@ -1,7 +1,7 @@
 chcp 936 >NUL& cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
-curl https://anycast.freecdn.workers.dev -o ip1.txt -#
+curl https://193107.xyz/Cloudflare-IP.txt -o ip1.txt -#
 set numN=%random%
 set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
