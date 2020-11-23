@@ -1,13 +1,13 @@
-chcp 936 >NUL & cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP测速
+@echo off &chcp 936 >NUL &  color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
+::curl https://anycast.freecdn.workers.dev -o ip1.txt -#
 curl https://ip.193107.xyz/Cloudflare-IP.txt -o ip1.txt -#
 TITLE 获取cloudflare可用IP段
 Call :获取IP段 ip1.txt &&Call :删除重复行 ip2.txt
 TITLE 当前可用IP段(推荐选择：104.19、104.18或172.67)
 echo 当前可用IP段(推荐选择：104.19、104.18或172.67.)
 echo =========================================================
-rem type ip2.txt|findstr /I /V "1.1. 1.0. 173.245. 103.21."
 type ip2.txt|findstr "."
 echo =========================================================
 set /p IP-CS=请输入需要测速的IP段：
@@ -23,14 +23,14 @@ mkdir temp
 echo WScript.sleep 500 > sleep.vbs
 for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
-start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/__down?bytes=1000000000 -o temp/%%a -s --connect-timeout 2 --max-time 10
+start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.haoren.ml/cache.jpg -o temp/%%a -s --connect-timeout 2 --max-time 10
 echo %%a 启动测速
 )
+chcp 936 >NUL
 echo =========================================================
 TITLE 等待测速进程结束,…………大约需要15秒
-echo 等待测速进程结束,…………大约需要15秒
-echo =========================================================
-choice /t 15 /d y /n >nul
+timeout /T 15 /NOBREAK
+chcp 936 >NUL
 cls
 dir /o:-s temp|findstr "%IP-CS%"|findstr "%date:~0,10%"> ip.txt
 Call :N个IP ip.txt
@@ -59,7 +59,7 @@ goto :eof
 :获取IP段
 sort %1>%1_tmp.txt
 echo.>ip2.txt
-for /f "tokens=1,2 delims=." %%i in (%1_tmp.txt) do (echo %%i.%%j.>>ip2.txt)
+for /f "tokens=1,2 delims=." %%i in (%1_tmp.txt) do (echo %%i.%%j>>ip2.txt)
 del %1_tmp.txt >nul
 goto :eof
 
