@@ -14,9 +14,12 @@ echo =========================================================
 if EXIST "%~dp0temp" rd /s /q "%~dp0temp"
 mkdir temp
 echo WScript.sleep 500 > sleep.vbs
+Set /a a1=0
 for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
-start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/__down?bytes=1000000000 -o temp/%%a -s --connect-timeout 2 --max-time 10
+start /b curl --resolve speed.haoren.ml:443:%%a https://speed.haoren.ml/cache.jpg -o temp/%%a -s --connect-timeout 2 --max-time 10
+set /a a1+=1
+TITLE %%a 启动测速 !a1! 个IP
 echo %%a 启动测速
 )
 chcp 936 >NUL
