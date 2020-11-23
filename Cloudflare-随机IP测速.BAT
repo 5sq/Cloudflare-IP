@@ -1,4 +1,4 @@
-chcp 936 >NUL& cls & @echo off & color A & cd "%~dp0" &TITLE cloudflareIP测速
+@echo off &chcp 936 >NUL &color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
 curl https://ip.193107.xyz/Cloudflare-IP.txt -o ip1.txt -#
@@ -16,14 +16,15 @@ mkdir temp
 echo WScript.sleep 500 > sleep.vbs
 for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
-start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/__down?bytes=1000000000 -o temp/%%a -s --connect-timeout 2 --max-time 10
+::start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/__down?bytes=1000000000 -o temp/%%a -s --connect-timeout 2 --max-time 10
+start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.haoren.ml/cache.jpg -o temp/%%a -s --connect-timeout 2 --max-time 10
 echo %%a 启动测速
 )
+chcp 936 >NUL
 echo =========================================================
 TITLE 等待测速进程结束,…………大约需要15秒
-echo 等待测速进程结束,…………大约需要15秒
-echo =========================================================
-choice /t 15 /d y /n >nul
+timeout /T 15 /NOBREAK
+chcp 936 >NUL
 dir /o:-s temp|findstr "%numN%"|findstr "%date:~0,10%"> ip.txt
 Call :N个IP ip.txt
 cls
