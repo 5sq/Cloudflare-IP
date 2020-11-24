@@ -1,16 +1,16 @@
-@echo off &chcp 936 >NUL &color A & cd "%~dp0" &TITLE cloudflareIP测速
+@echo off &chcp 936 >NUL&color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
-curl https://ip.193107.xyz/Cloudflare-IP.txt -o ip1.txt -#
+curl https://ip.193107.xyz/Cloudflare-IP.txt -o ip1.txt -#>NUL 
 set numN=%random%
 set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
-Call :取前N个 ip.txt
+Call :取前N个 ip.txt,88
 CLS
-echo =========================================================
+echo ==================================================================
 TITLE  随机选中%count%个IP测速中…………
 echo 随机选中%count%个IP测速中…………
-echo =========================================================
+echo ==================================================================
 if EXIST "%~dp0temp" rd /s /q "%~dp0temp"
 mkdir temp
 echo WScript.sleep 500 > sleep.vbs
@@ -19,40 +19,45 @@ for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
 start /b curl --resolve speed.haoren.ml:443:%%a https://speed.haoren.ml/cache.jpg -o temp/%%a -s --connect-timeout 2 --max-time 10
 set /a a1+=1
-TITLE %%a 启动测速 !a1! 个IP
+TITLE %%a 启动测速。已经测速 !a1! 个IP
 echo %%a 启动测速
 )
 chcp 936 >NUL
-echo =========================================================
+echo ==================================================================
 TITLE 等待测速进程结束,…………大约需要15秒
 timeout /T 15 /NOBREAK
 chcp 936 >NUL
 dir /o:-s temp|findstr "%numN%"|findstr "%date:~0,10%"> ip.txt
+dir /o:-s /b temp >ip1.txt
+Call :取前N个 ip1.txt,3
 Call :N个IP ip.txt
 cls
-echo =========================================================
-TITLE 测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
-echo  测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
+echo ==================================================================
+TITLE 测速成功%countIP%个IP
+echo  测速成功%countIP%个IP
 echo ---------------------------------------------------------
 echo 时间			单位时间下载字节	IP
 echo ---------------------------------------------------------
 type ip.txt
 echo ---------------------------------------------------------
-echo  测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
-echo =========================================================
+echo  测速通过%countIP%个IP中下载速度最快的3个IP：
+echo ---------------------------------------------------------
+type ip1.txt
+echo ==================================================================
 rd /s /q "%~dp0temp"
 del ip.txt ip1.txt sleep.vbs ip.txt_tmp.txt
 pause&goto :eof
 
 :取前N个
-sort %1>%1_tmp.txt
-echo.>%1
+type %1>%1_tmp.txt
+del %1
 set count=0
 for /f "tokens=1,2" %%a in (%1_tmp.txt) do (
 echo %%a >> %1
 set /a count+=1
-if !count! equ 66 del %1_tmp.txt >nul&&goto :eof
+if !count! equ %2 del %1_tmp.txt >nul&&goto :eof
 )
+del %1_tmp.txt >nul
 goto :eof
 
 :N个IP
