@@ -10,7 +10,8 @@ echo =========================================================
 type ip2.txt|findstr "."
 echo =========================================================
 set /p IP-CS=请输入需要测速的IP段：
-findstr "%IP-CS%" ip1.txt > ip.txt
+findstr "%IP-CS%" ip1.txt > ip2.txt
+sort /+9 ip2.txt > ip.txt
 Call :取前N个 ip.txt,66
 cls
 echo =========================================================
