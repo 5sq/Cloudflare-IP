@@ -11,7 +11,7 @@ type ip2.txt|findstr "."
 echo =========================================================
 set /p IP-CS=请输入需要测速的IP段：
 findstr "%IP-CS%" ip1.txt > ip.txt
-Call :取前N个 ip.txt
+Call :取前N个 ip.txt,66
 cls
 echo =========================================================
 TITLE %IP-CS% IP段选出%count%测速中…………
@@ -25,7 +25,7 @@ for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
 start /b curl --resolve speed.haoren.ml:443:%%a https://speed.haoren.ml/cache.jpg -o temp/%%a -s --connect-timeout 2 --max-time 10
 set /a a1+=1
-TITLE %%a 启动测速 !a1! 个IP
+TITLE %%a 启动测速。已经测速 !a1! 个IP
 echo %%a 启动测速
 )
 chcp 936 >NUL
@@ -35,17 +35,21 @@ timeout /T 15 /NOBREAK
 cls
 chcp 936 >NUL
 dir /o:-s temp|findstr "%IP-CS%"|findstr "%date:~0,10%"> ip.txt
+dir /o:-s /b temp >ip1.txt
+Call :取前N个 ip1.txt,5
 Call :N个IP ip.txt
 cls
 echo =========================================================
-TITLE 测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
-echo  测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
+TITLE 测速成功%countIP%个IP！
+echo  测速成功%countIP%个IP！
 echo ---------------------------------------------------------
 echo 时间			单位时间下载字节	IP
 echo ---------------------------------------------------------
 type ip.txt
 echo ---------------------------------------------------------
-echo  测速成功%countIP%个IP排序结果（请选择排最前面的IP!）
+echo  测速通过%countIP%个IP中下载速度最快的5个IP：
+echo ---------------------------------------------------------
+type ip1.txt
 echo =========================================================
 rd /s /q "%~dp0temp"
 del ip.txt ip1.txt sleep.vbs ip2.txt
@@ -66,13 +70,13 @@ del %1_tmp.txt >nul
 goto :eof
 
 :取前N个
-sort %1>%1_tmp.txt
-echo.>%1
+type %1>%1_tmp.txt
+del %1
 set count=0
 for /f "tokens=1,2" %%a in (%1_tmp.txt) do (
 echo %%a >> %1
 set /a count+=1
-if !count! equ 66 del %1_tmp.txt >nul&&goto :eof
+if !count! equ %2 del %1_tmp.txt >nul&&goto :eof
 )
 del %1_tmp.txt >nul
 goto :eof
