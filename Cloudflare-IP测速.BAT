@@ -1,7 +1,6 @@
 @echo off &chcp 936 >NUL &  color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
-::curl https://anycast.freecdn.workers.dev -o ip1.txt -#
 curl https://ip.193107.xyz/Cloudflare-IP.txt -o ip1.txt -#
 TITLE 获取cloudflare可用IP段
 Call :获取IP段 ip1.txt &&Call :删除重复行 ip2.txt
