@@ -1,6 +1,7 @@
 @echo off &chcp 936 >NUL&color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
+forfiles /m Cloudflare-IP.txt /s /d -7 /c "cmd /c del /f /s /q @path" & cls
 if not EXIST Cloudflare-IP.txt curl https://ip.193107.xyz/Cloudflare-IP.txt -o Cloudflare-IP.txtt -#
 if EXIST Cloudflare-IP.txt type Cloudflare-IP.txt >ip1.txt
 set numN=%random%
