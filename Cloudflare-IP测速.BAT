@@ -1,11 +1,14 @@
 @echo off &chcp 936 >NUL &  color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
-curl https://ip.193107.xyz/Cloudflare-IP.txt -o ip1.txt -#
+if not EXIST Cloudflare-IP.txt curl https://ip.193107.xyz/Cloudflare-IP.txt -o Cloudflare-IP.txt -#
+if EXIST Cloudflare-IP.txt type Cloudflare-IP.txt >ip1.txt
 TITLE 获取cloudflare可用IP段
-Call :获取IP段 ip1.txt &&Call :删除重复行 ip2.txt
-TITLE 当前可用IP段(推荐选择：104.19、104.18或172.67)
-echo 当前可用IP段(推荐选择：104.19、104.18或172.67.)
+Call :获取IP段 ip1.txt 
+TITLE 删除重复IP段
+Call :删除重复行 ip2.txt
+TITLE 当前可用IP段(推荐选择：104.19、104.16或172.67)
+echo 当前可用IP段(推荐选择：104.19、104.16或172.67.)
 echo =========================================================
 type ip2.txt|findstr "."
 echo =========================================================
@@ -59,14 +62,14 @@ pause&goto :eof
 :删除重复行
 sort %1>%1_tmp.txt
 echo.>%1
-for /f "delims=" %%i in (%1_tmp.txt) do (if not defined %%i set %%i=A & echo %%i>>%1)
+for /f "delims=" %%i in (%1_tmp.txt) do (if not defined %%i set %%i=A & TITLE 删除重复IP：%%i & echo %%i>>%1)
 del %1_tmp.txt >nul
 goto :eof
 
 :获取IP段
 sort %1>%1_tmp.txt
 echo.>ip2.txt
-for /f "tokens=1,2 delims=." %%i in (%1_tmp.txt) do (echo %%i.%%j>>ip2.txt)
+for /f "tokens=1,2 delims=." %%i in (%1_tmp.txt) do (TITLE 获取cloudflare可用IP段：%%i.%%j & echo %%i.%%j>>ip2.txt)
 del %1_tmp.txt >nul
 goto :eof
 
