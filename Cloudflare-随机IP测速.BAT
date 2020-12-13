@@ -1,11 +1,12 @@
 @echo off &chcp 936 >NUL&color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
-curl https://ip.193107.xyz/Cloudflare-IP.txt -o ip1.txt -#
+if not EXIST Cloudflare-IP.txt curl https://ip.193107.xyz/Cloudflare-IP.txt -o Cloudflare-IP.txtt -#
+if EXIST Cloudflare-IP.txt type Cloudflare-IP.txt >ip1.txt
 set numN=%random%
 set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
-Call :取前N个 ip.txt,88
+Call :取前N个 ip.txt,99
 CLS
 echo ==================================================================
 TITLE  随机选中%count%个IP测速中…………
@@ -29,7 +30,7 @@ timeout /T 15 /NOBREAK
 chcp 936 >NUL
 dir /o:-s temp|findstr "%numN%"|findstr "%date:~0,10%"> ip.txt
 dir /o:-s /b temp >ip1.txt
-Call :取前N个 ip1.txt,3
+Call :取前N个 ip1.txt,5
 Call :N个IP ip.txt
 cls
 echo ==================================================================
@@ -40,7 +41,7 @@ echo 时间			单位时间下载字节	IP
 echo ---------------------------------------------------------
 type ip.txt
 echo ---------------------------------------------------------
-echo  测速通过%countIP%个IP中下载速度最快的3个IP：
+echo  测速通过%countIP%个IP中下载速度最快的5个IP：
 echo ---------------------------------------------------------
 type ip1.txt
 echo ==================================================================
