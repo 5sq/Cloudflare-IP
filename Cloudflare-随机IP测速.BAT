@@ -19,7 +19,7 @@ echo WScript.sleep 500 > sleep.vbs
 Set /a a1=0
 for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
-start /b curl --resolve speed.haoren.ml:443:%%a https://speed.haoren.ml/cache.jpg -o temp/%%a -s --connect-timeout 2 --max-time 10
+start /b curl --resolve speedtest.udpfile.com:443:%%a https://speedtest.udpfile.com/cache.png -o temp/%%a -s --connect-timeout 2 --max-time 10
 set /a a1+=1
 TITLE %%a 启动测速。已经测速 !a1! 个IP
 echo %%a 启动测速
