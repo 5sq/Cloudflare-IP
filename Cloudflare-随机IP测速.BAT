@@ -7,7 +7,7 @@ if EXIST Cloudflare-IP.txt type Cloudflare-IP.txt >ip1.txt
 set numN=%random%
 set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
-Call :取前N个 ip.txt,99
+Call :取前N个 ip.txt,200
 CLS
 echo ==================================================================
 TITLE  随机选中%count%个IP测速中…………
