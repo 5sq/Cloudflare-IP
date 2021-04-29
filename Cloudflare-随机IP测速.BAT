@@ -7,7 +7,7 @@ if EXIST Cloudflare-IP.txt type Cloudflare-IP.txt >ip1.txt
 set numN=%random%
 set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
-Call :取前N个 ip.txt,200
+Call :取前N个 ip.txt,255
 CLS
 echo ==================================================================
 TITLE  随机选中%count%个IP测速中…………
@@ -21,7 +21,7 @@ for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
 start /b curl --resolve speedtest.udpfile.com:443:%%a https://speedtest.udpfile.com/cache.png -o temp/%%a -s --connect-timeout 2 --max-time 10
 set /a a1+=1
-TITLE %%a 启动测速。已经测速 !a1! 个IP
+TITLE %%a 启动测速。%count%个IP已经测速 !a1! 个IP
 echo %%a 启动测速
 )
 chcp 936 >NUL
