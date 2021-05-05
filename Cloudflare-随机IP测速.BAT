@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
 forfiles /m Cloudflare-IP.txt /s /d -7 /c "cmd /c del /f /s /q @path" & cls
-if not EXIST Cloudflare-IP.txt curl https://ip.193107.xyz/Cloudflare-IP.txt -o Cloudflare-IP.txt -#
+if not EXIST Cloudflare-IP.txt curl https://raw.githubusercontent.com/5sq/Cloudflare-IP/main/Cloudflare-IP.txt -o Cloudflare-IP.txt -#
 if EXIST Cloudflare-IP.txt type Cloudflare-IP.txt >ip1.txt
 set numN=%random%
 set /a numN=numN%%60+40
