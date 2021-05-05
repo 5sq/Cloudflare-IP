@@ -1,17 +1,17 @@
-@echo off &chcp 936 >NUL&color A & cd "%~dp0" &TITLE cloudflareIP²âËÙ
+@echo off &chcp 936 >NUL&color A & cd "%~dp0" &TITLE cloudflareIPæµ‹é€Ÿ
 CLS
 setlocal enabledelayedexpansion
-TITLE »ñÈ¡cloudflare IP
+TITLE èŽ·å–cloudflare IP
 forfiles /m Cloudflare-IP.txt /s /d -7 /c "cmd /c del /f /s /q @path" & cls
-if not EXIST Cloudflare-IP.txt curl https://raw.githubusercontent.com/5sq/Cloudflare-IP/main/Cloudflare-IP.txt -o Cloudflare-IP.txt -#||echo Çëµ½ https^://github.com/5sq/Cloudflare-IP ÏÂÔØCloudflare-IP.txtµ½µ±Ç°Ä¿Â¼¡£ & pause&goto :eof
+if not EXIST Cloudflare-IP.txt curl https://raw.githubusercontent.com/5sq/Cloudflare-IP/main/Cloudflare-IP.txt -o Cloudflare-IP.txt -#||echo è¯·åˆ° https^://github.com/5sq/Cloudflare-IP ä¸‹è½½Cloudflare-IP.txtåˆ°å½“å‰ç›®å½•ã€‚ && pause&&goto :eof
 if EXIST Cloudflare-IP.txt type Cloudflare-IP.txt >ip1.txt
 set numN=%random%
 set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
-Call :È¡Ç°N¸ö ip.txt,255
+Call :å–å‰Nä¸ª ip.txt,255
 echo ==================================================================
-TITLE  Ëæ»úÑ¡ÖÐ%count%¸öIP²âËÙÖÐ¡­¡­¡­¡­
-echo Ëæ»úÑ¡ÖÐ%count%¸öIP²âËÙÖÐ¡­¡­¡­¡­
+TITLE  éšæœºé€‰ä¸­%count%ä¸ªIPæµ‹é€Ÿä¸­â€¦â€¦â€¦â€¦
+echo éšæœºé€‰ä¸­%count%ä¸ªIPæµ‹é€Ÿä¸­â€¦â€¦â€¦â€¦
 echo ==================================================================
 if EXIST "%~dp0temp" rd /s /q "%~dp0temp"
 mkdir temp
@@ -21,28 +21,28 @@ for /f "tokens=1,2" %%a in ('type "ip.txt"') do (
 sleep.vbs
 start /b curl --resolve speedtest.udpfile.com:443:%%a https://speedtest.udpfile.com/cache.png -o temp/%%a -s --connect-timeout 2 --max-time 10
 set /a a1+=1
-TITLE  Ëæ»úÑ¡ÖÐ%count%¸öIP ÒÑ¾­²âËÙ !a1! ¸öIP %%a Æô¶¯²âËÙ
-echo %%a Æô¶¯²âËÙ
+TITLE  éšæœºé€‰ä¸­%count%ä¸ªIP å·²ç»æµ‹é€Ÿ !a1! ä¸ªIP %%a å¯åŠ¨æµ‹é€Ÿ
+echo %%a å¯åŠ¨æµ‹é€Ÿ
 )
 chcp 936 >NUL
 echo ==================================================================
-TITLE µÈ´ý²âËÙ½ø³Ì½áÊø,¡­¡­¡­¡­´óÔ¼ÐèÒª15Ãë
+TITLE ç­‰å¾…æµ‹é€Ÿè¿›ç¨‹ç»“æŸ,â€¦â€¦â€¦â€¦å¤§çº¦éœ€è¦15ç§’
 timeout /T 15 /NOBREAK
 chcp 936 >NUL
 dir /o:-s temp|findstr "%numN%"|findstr "%date:~0,10%"> ip.txt
 dir /o:-s /b temp >ip1.txt
-Call :È¡Ç°N¸ö ip1.txt,5
-Call :N¸öIP ip.txt
+Call :å–å‰Nä¸ª ip1.txt,5
+Call :Nä¸ªIP ip.txt
 cls
 echo ==================================================================
-TITLE ²âËÙ³É¹¦%countIP%¸öIP
-echo  ²âËÙ³É¹¦%countIP%¸öIP
+TITLE æµ‹é€ŸæˆåŠŸ%countIP%ä¸ªIP
+echo  æµ‹é€ŸæˆåŠŸ%countIP%ä¸ªIP
 echo ---------------------------------------------------------
-echo Ê±¼ä			µ¥Î»Ê±¼äÏÂÔØ×Ö½Ú	IP
+echo æ—¶é—´			å•ä½æ—¶é—´ä¸‹è½½å­—èŠ‚	IP
 echo ---------------------------------------------------------
 type ip.txt
 echo ---------------------------------------------------------
-echo  ²âËÙÍ¨¹ý%countIP%¸öIPÖÐÏÂÔØËÙ¶È×î¿ìµÄ5¸öIP£º
+echo  æµ‹é€Ÿé€šè¿‡%countIP%ä¸ªIPä¸­ä¸‹è½½é€Ÿåº¦æœ€å¿«çš„5ä¸ªIPï¼š
 echo ---------------------------------------------------------
 type ip1.txt
 echo ==================================================================
@@ -50,7 +50,7 @@ rd /s /q "%~dp0temp"
 del ip.txt ip1.txt sleep.vbs ip.txt_tmp.txt
 pause&goto :eof
 
-:È¡Ç°N¸ö
+:å–å‰Nä¸ª
 type %1>%1_tmp.txt
 del %1
 set count=0
@@ -62,7 +62,7 @@ if !count! equ %2 del %1_tmp.txt >nul&&goto :eof
 del %1_tmp.txt >nul
 goto :eof
 
-:N¸öIP
+:Nä¸ªIP
 set countIP=0
 for /f "tokens=1,2" %%a in (%1) do (set /a countIP+=1)
 goto :eof
