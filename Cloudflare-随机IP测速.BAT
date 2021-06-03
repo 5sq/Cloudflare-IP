@@ -29,7 +29,6 @@ dir /o:-s temp|findstr "%numN%"|findstr "%date:~0,10%"> ip.txt
 dir /o:-s /b temp >ip1.txt
 Call :取前N个 ip1.txt,10
 Call :N个IP ip.txt
-cls
 echo ==================================================================
 TITLE 测速成功%countIP%个IP
 echo  测速成功%countIP%个IP
