@@ -1,36 +1,36 @@
-@echo off &chcp 936 >NUL&color A & cd "%~dp0" &TITLE cloudflareIP²âËÙ
+@echo off &chcp 936 >NUL&color A & cd "%~dp0" &TITLE cloudflareIPæµ‹é€Ÿ
 CLS
 setlocal enabledelayedexpansion
-TITLE »ñÈ¡cloudflare IP
+TITLE è·å–cloudflare IP
 forfiles /m Cloudflare-IP.txt /s /d -100 /c "cmd /c del /f /s /q @path" & cls
-if not EXIST Cloudflare-IP.txt echo Çëµ½ https^://github.com/5sq/Cloudflare-IP ÏÂÔØCloudflare-IP.txtµ½µ±Ç°Ä¿Â¼¡£ && pause&&goto :eof
+if not EXIST Cloudflare-IP.txt echo è¯·åˆ° https^://github.com/5sq/Cloudflare-IP ä¸‹è½½Cloudflare-IP.txtåˆ°å½“å‰ç›®å½•ã€‚ && pause&&goto :eof
 type Cloudflare-IP.txt > ip1.txt
 set numN=%random%
 set /a numN=numN%%60+40
 findstr "%numN%" ip1.txt > ip.txt
-Call :N¸öIP ip.txt
+Call :Nä¸ªIP ip.txt
 set /a nu=%countIP%/30*30
-Call :È¡Ç°N¸ö ip.txt,%nu%
-Call :È¡Ç°N¸ö ip.txt,210
-Call :N¸öIP ip.txt
+Call :å–å‰Nä¸ª ip.txt,%nu%
+Call :å–å‰Nä¸ª ip.txt,210
+Call :Nä¸ªIP ip.txt
 echo ==================================================================
-title ²âÊÔ%countIP% CF½ÚµãICMP ¶ª°üÂÊ
-echo ²âÊÔ%countIP% CF½ÚµãICMP ¶ª°üÂÊ
+title æµ‹è¯•%countIP% CFèŠ‚ç‚¹ICMP ä¸¢åŒ…ç‡
+echo æµ‹è¯•%countIP% CFèŠ‚ç‚¹ICMP ä¸¢åŒ…ç‡
 echo ==================================================================
 Call :PingCF
 echo ==================================================================
-Call :N¸öIP ip.txt
-echo CF½ÚµãICMP²âÊÔ£¬Ã»ÓĞ¶ª°üµÄ %countIP% ¸öIP:
+Call :Nä¸ªIP ip.txt
+echo CFèŠ‚ç‚¹ICMPæµ‹è¯•ï¼Œæ²¡æœ‰ä¸¢åŒ…çš„ %countIP% ä¸ªIP:
 echo ==================================================================
 type ip.txt
 echo ==================================================================
 Call :meta
 echo ==================================================================
-type ip.txt >Ã»ÓĞ¶ª°üµÄ%countIP%¸öIP.txt
+type ip.txt >æ²¡æœ‰ä¸¢åŒ…çš„%countIP%ä¸ªIP.txt
 del /q ip.txt ip1.txt ping.csv
 pause&goto :eof
 
-:È¡Ç°N¸ö
+:å–å‰Nä¸ª
 type %1>%1_tmp.txt
 del %1
 set count=0
@@ -42,7 +42,7 @@ if !count! equ %2 del %1_tmp.txt >nul&&goto :eof
 del %1_tmp.txt >nul
 goto :eof
 
-:N¸öIP
+:Nä¸ªIP
 set countIP=0
 for /f "tokens=1,2" %%a in (%1) do (set /a countIP+=1)
 goto :eof
@@ -57,7 +57,7 @@ powershell -c "$n=1;$m=1;gc 'ip.txt'|%%{$f='tmp\'+$m+'.txt';$_>>$f;if($n%%%n% -e
 for /r "%~dp0tmp" %%i in (*.txt) do (
 set /a n2=!n1!*30
 if !n2! GTR %countIP% set /a n2=%countIP%
-title ÒÑ²âÊÔ !n2!/%countIP% CF½ÚµãICMP ¶ª°üÂÊ
+title å·²æµ‹è¯• !n2!/%countIP% CFèŠ‚ç‚¹ICMP ä¸¢åŒ…ç‡
 if EXIST %%i more %%i>a.txt
 if EXIST a.txt fping -f a.txt -c 20 --interval=0 -s >temp.csv
 if EXIST temp.csv more +1 temp.csv>>ping.csv
@@ -68,7 +68,7 @@ set /a n1+=1
 if EXIST "%~dp0tmp" rd /s /q "%~dp0tmp"
 more ping.csv>temp.csv
 echo ==================================================================
-echo IPµØÖ·		·¢ËÍ	½ÓÊÕ	Æ½¾ù	×îÉÙ	×î¶à	
+echo IPåœ°å€		å‘é€	æ¥æ”¶	å¹³å‡	æœ€å°‘	æœ€å¤š	
 echo ==================================================================
 setlocal
 del ping.csv
@@ -77,12 +77,14 @@ del temp.csv
 for /F "tokens=1-7 delims=," %%a in (ping.csv) do set "a[%%e,%%f,%%g,%%a,%%b,%%c,%%d]=%%"
 del ping.csv
 for /F "tokens=1-8 delims=[,]=" %%a in ('set a[') do echo %%a,%%b,%%c,%%d,%%e,%%f,%%g,%%h >>ping.csv
+rem findstr "104.19" ping.csv >temp.csv&&sort /+3 /r temp.csv>tmp.csv&&findstr /v "104.19" ping.csv >>tmp.csv&&more tmp.csv>ping.csv
 del ip.txt tmp.csv temp.csv
 set count=0
 for /F "tokens=1-8 delims=," %%a in (ping.csv) do (
 set /a count+=1
 echo %%e	%%g	%%h	%%b	%%c	%%d
 echo %%e >>ip.txt
+rem if !count! equ 30 endlocal&&goto :eof
 )
 endlocal
 goto :eof
@@ -90,46 +92,49 @@ goto :eof
 :meta
 setlocal enabledelayedexpansion
 if EXIST meta.txt del meta.txt
-	for /f "delims=" %%a in ('curl --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
+ 	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:%1 --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
 	set str=%%a
 	set str=!str:{=!
 	set str=!str:}=!
 	set str=!str:"=!
 	echo !str:,=%;!
 	)>meta.txt
+
 for /f "tokens=1 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:hostname=Ô¶¶ËÖ÷»úÃû! 
+echo !str:hostname=è¿œç«¯ä¸»æœºå! 
 )
 for /f "tokens=2 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:clientIp=±¾»ú¹«ÍøIP! 
+echo !str:clientIp=æœ¬æœºå…¬ç½‘IP! 
 )
 for /f "tokens=4 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:asn=×ÔÖÎÓò AS! 
+echo !str:asn=è‡ªæ²»åŸŸ AS! 
 )
 for /f "tokens=5 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:colo=Êı¾İÖĞĞÄ! 
+echo !str:colo=æ•°æ®ä¸­å¿ƒ! 
 )
 for /f "tokens=6 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:country=ËùÔÚ¹ú¼Ò! 
+echo !str:country=æ‰€åœ¨å›½å®¶! 
 )
 for /f "tokens=7 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:city=ËùÔÚ³ÇÊĞ!
+echo !str:city=æ‰€åœ¨åŸå¸‚!
 )
 for /f "tokens=8 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:latitude=Î³¶È! 
+echo !str:latitude=çº¬åº¦! 
 )
 for /f "tokens=9 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:longitude=¾­¶È! 
+echo !str:longitude=ç»åº¦! 
 )
 del meta.txt
 goto :eof
 
+
 pause&goto :eof
+
