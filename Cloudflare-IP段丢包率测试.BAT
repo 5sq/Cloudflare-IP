@@ -1,57 +1,72 @@
-@echo off &chcp 936 >NUL &  color A & cd "%~dp0" &TITLE cloudflareIP²âËÙ
+@echo off &chcp 936 >NUL &  color A & cd "%~dp0" &TITLE cloudflareIPæµ‹é€Ÿ
 setlocal enabledelayedexpansion
-TITLE »ñÈ¡cloudflare IP
+TITLE è·å–cloudflare IP
 
 cls
-TITLE µ±Ç°¿ÉÓÃIP¶Î(ÍÆ¼öÑ¡Ôñ£º104.19¡¢104.18¡¢104.17¡¢104.16)
-echo µ±Ç°¿ÉÓÃIP¶Î(ÍÆ¼öÑ¡Ôñ£º104.19¡¢104.18¡¢104.17¡¢104.16)
+TITLE å½“å‰å¯ç”¨IPæ®µ(æ¨èé€‰æ‹©ï¼š104.19ã€104.18ã€104.17ã€104.16)
+echo å½“å‰å¯ç”¨IPæ®µ(æ¨èé€‰æ‹©ï¼š104.19ã€104.18ã€104.17ã€104.16)
 echo ==================================================================
-echo 1¡¢£¨104.16£©
-echo 2¡¢£¨104.17£©
-echo 3¡¢£¨104.18£©
-echo 4¡¢£¨104.19£©
-echo 5¡¢£¨172.64£©
-echo 6¡¢£¨172.67£©
-echo 0¡¢£¨ÍË³ö£©
+echo 1ã€ï¼ˆ104.16ï¼‰
+echo 2ã€ï¼ˆ104.17ï¼‰
+echo 3ã€ï¼ˆ104.18ï¼‰
+echo 4ã€ï¼ˆ104.19ï¼‰
+echo 5ã€ï¼ˆ172.64ï¼‰
+echo 5ã€ï¼ˆ104.21ï¼‰
+echo 6ã€ï¼ˆ104.24ï¼‰
+echo 7ã€ï¼ˆ104.25ï¼‰
+echo 8ã€ï¼ˆ104.27ï¼‰
+echo 9ã€ï¼ˆ162.159ï¼‰
+echo aã€ï¼ˆ172.64ï¼‰
+echo bã€ï¼ˆ172.67ï¼‰
+echo cã€ï¼ˆ190.93ï¼‰
+echo dã€ï¼ˆ198.41ï¼‰
+echo 0ã€ï¼ˆé€€å‡ºï¼‰
 echo ==================================================================
-set /p IP-CS=ÇëÑ¡ÔñIP¶Î²Ëµ¥£º
-if %IP-CS%==1 Set ip12=104.16&Set ip31=0&Set /a ip32=1+255&Call :Éú³ÉIP
-if %IP-CS%==2 Set ip12=104.17&Set ip31=0&Set /a ip32=1+255&Call :Éú³ÉIP
-if %IP-CS%==3 Set ip12=104.18&Set ip31=0&Set /a ip32=1+255&Call :Éú³ÉIP
-if %IP-CS%==4 Set ip12=104.19&Set ip31=0&Set /a ip32=1+255&Call :Éú³ÉIP
-if %IP-CS%==5 Set ip12=172.64&Set ip31=0&Set /a ip32=1+255&Call :Éú³ÉIP
-if %IP-CS%==6 Set ip12=172.67&Set ip31=0&Set /a ip32=1+255&Call :Éú³ÉIP
+set /p IP-CS=è¯·é€‰æ‹©IPæ®µèœå•ï¼š
+if %IP-CS%==1 Set ip12=104.16&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==2 Set ip12=104.17&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==3 Set ip12=104.18&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==4 Set ip12=104.19&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==5 Set ip12=104.21&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==6 Set ip12=104.24&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==7 Set ip12=104.25&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==8 Set ip12=104.27&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==9 Set ip12=162.159&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==a Set ip12=172.64&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==b Set ip12=172.67&Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==c Set ip12=190.93&Set ip31=240&Set /a ip32=1+255&Call :ç”ŸæˆIP
+if %IP-CS%==d Set ip12=198.41&Set ip31=128&Set /a ip32=1+255&Call :ç”ŸæˆIP 
 if %IP-CS%==0 exit
 
-Call :È¡Ç°N¸ö ip.txt,210
-Call :N¸öIP ip.txt
+Call :å–å‰Nä¸ª ip.txt,210
+Call :Nä¸ªIP ip.txt
 echo ==================================================================
-title ²âÊÔ%countIP% CF½ÚµãICMP ¶ª°üÂÊ
-echo ²âÊÔ%countIP% CF½ÚµãICMP ¶ª°üÂÊ
+title æµ‹è¯•%countIP% CFèŠ‚ç‚¹ICMP ä¸¢åŒ…ç‡
+echo æµ‹è¯•%countIP% CFèŠ‚ç‚¹ICMP ä¸¢åŒ…ç‡
 echo ==================================================================
 Call :PingCF
 echo ==================================================================
-Call :N¸öIP ip.txt
-echo CF½ÚµãICMP²âÊÔ£¬Ã»ÓĞ¶ª°üµÄ %countIP% ¸öIP:
-title CF½ÚµãICMP²âÊÔ£¬Ã»ÓĞ¶ª°üµÄ %countIP% ¸öIP:
+Call :Nä¸ªIP ip.txt
+echo CFèŠ‚ç‚¹ICMPæµ‹è¯•ï¼Œæ²¡æœ‰ä¸¢åŒ…çš„ %countIP% ä¸ªIP:
+title CFèŠ‚ç‚¹ICMPæµ‹è¯•ï¼Œæ²¡æœ‰ä¸¢åŒ…çš„ %countIP% ä¸ªIP:
 echo ==================================================================
 type ip.txt
 echo ---------------------------------------------------------
-echo ²âËÙÍ¨¹ıÃ»ÓĞ¶ª°üµÄ%countIP%¸öCF½Úµã
-title ²âËÙÍ¨¹ıÃ»ÓĞ¶ª°üµÄ%countIP%¸öCF½Úµã
+echo æµ‹é€Ÿé€šè¿‡æ²¡æœ‰ä¸¢åŒ…çš„%countIP%ä¸ªCFèŠ‚ç‚¹
+title æµ‹é€Ÿé€šè¿‡æ²¡æœ‰ä¸¢åŒ…çš„%countIP%ä¸ªCFèŠ‚ç‚¹
 Call :meta
 echo ==================================================================
-type ip.txt >Ã»ÓĞ¶ª°üµÄ%countIP%¸öIP.txt
-del ip.txt ip2.txt meta.txt ping.csv FreeCDN-IP.txt
+type ip.txt >æ²¡æœ‰ä¸¢åŒ…çš„%countIP%ä¸ªIP.txt
+del ip.txt ip2.txt meta.txt ping.csv
 pause&goto :eof
 
 
-:Éú³ÉIP
+:ç”ŸæˆIP
 set count=%ip31%
 echo.>ip.txt
 for /l %%i in (1,1,260)do (
 Set /a u1=!random!%%60+40
-TITLE  Éú³ÉIP£º%ip12%.!count!.!u1!
+TITLE  ç”ŸæˆIPï¼š%ip12%.!count!.!u1!
 echo %ip12%.!count!.!u1!>> ip.txt
 set /a count+=1
 if !count! equ %ip32% goto :eof
@@ -59,7 +74,7 @@ if !count! equ %ip32% goto :eof
 goto :eof
 
 
-:È¡Ç°N¸ö
+:å–å‰Nä¸ª
 type %1>%1_tmp.txt
 del %1
 set count=0
@@ -71,7 +86,7 @@ if !count! equ %2 del %1_tmp.txt >nul&&goto :eof
 del %1_tmp.txt >nul
 goto :eof
 
-:N¸öIP
+:Nä¸ªIP
 set countIP=0
 for /f "tokens=1,2" %%a in (%1) do (set /a countIP+=1)
 goto :eof
@@ -86,7 +101,7 @@ powershell -c "$n=1;$m=1;gc 'ip.txt'|%%{$f='tmp\'+$m+'.txt';$_>>$f;if($n%%%n% -e
 for /r "%~dp0tmp" %%i in (*.txt) do (
 set /a n2=!n1!*30
 if !n2! GTR %countIP% set /a n2=%countIP%
-title ÒÑ²âÊÔ !n2!/%countIP% CF½ÚµãICMP ¶ª°üÂÊ
+title å·²æµ‹è¯• !n2!/%countIP% CFèŠ‚ç‚¹ICMP ä¸¢åŒ…ç‡
 if EXIST %%i more %%i>a.txt
 if EXIST a.txt fping -f a.txt -c 20 --interval=0 -s >temp.csv
 if EXIST temp.csv more +1 temp.csv>>ping.csv
@@ -97,7 +112,7 @@ set /a n1+=1
 if EXIST "%~dp0tmp" rd /s /q "%~dp0tmp"
 more ping.csv>temp.csv
 echo ==================================================================
-echo IPµØÖ·		·¢ËÍ	½ÓÊÕ	Æ½¾ù	×îÉÙ	×î¶à	
+echo IPåœ°å€		å‘é€	æ¥æ”¶	å¹³å‡	æœ€å°‘	æœ€å¤š	
 echo ==================================================================
 setlocal
 del ping.csv
@@ -119,7 +134,7 @@ goto :eof
 :meta
 setlocal enabledelayedexpansion
 if EXIST meta.txt del meta.txt
-	for /f "delims=" %%a in ('curl --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
+ 	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:%1 --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
 	set str=%%a
 	set str=!str:{=!
 	set str=!str:}=!
@@ -128,35 +143,35 @@ if EXIST meta.txt del meta.txt
 	)>meta.txt
 for /f "tokens=1 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:hostname=Ô¶¶ËÖ÷»úÃû! 
+echo !str:hostname=è¿œç«¯ä¸»æœºå! 
 )
 for /f "tokens=2 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:clientIp=±¾»ú¹«ÍøIP! 
+echo !str:clientIp=æœ¬æœºå…¬ç½‘IP! 
 )
 for /f "tokens=4 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:asn=×ÔÖÎÓò AS! 
+echo !str:asn=è‡ªæ²»åŸŸ AS! 
 )
 for /f "tokens=5 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:colo=Êı¾İÖĞĞÄ! 
+echo !str:colo=æ•°æ®ä¸­å¿ƒ! 
 )
 for /f "tokens=6 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:country=ËùÔÚ¹ú¼Ò! 
+echo !str:country=æ‰€åœ¨å›½å®¶! 
 )
 for /f "tokens=7 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:city=ËùÔÚ³ÇÊĞ!
+echo !str:city=æ‰€åœ¨åŸå¸‚!
 )
 for /f "tokens=8 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:latitude=Î³¶È! 
+echo !str:latitude=çº¬åº¦! 
 )
 for /f "tokens=9 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:longitude=¾­¶È! 
+echo !str:longitude=ç»åº¦! 
 )
 del meta.txt
 goto :eof
@@ -164,18 +179,18 @@ pause&goto :eof
 
 ==================bak==================
 
-103.21.244.0/22		103.21.244.1  µ½ 103.21.247.254
-103.22.200.0/22		103.22.200.1  µ½ 103.22.203.254
-103.31.4.0/22		103.31.0.1  µ½ 103.31.3.254
-104.16.0.0/13		255.16.0.1  µ½ 255.23.255.254
-104.24.0.0/14		104.24.0.1  µ½ 104.27.255.254
-108.162.192.0/18	108.162.192.1  µ½ 108.162.255.254
-131.0.72.0/22		131.0.72.1  µ½ 131.0.75.254
-141.101.64.0/18		141.101.64.1  µ½ 141.101.127.254
-162.158.0.0/15		162.158.0.1  µ½ 162.159.255.254
-172.64.0.0/13		172.64.0.1  µ½ 172.71.255.254
-173.245.48.0/20		173.245.48.1  µ½ 173.245.63.254
-188.114.96.0/20		188.114.96.1  µ½ 188.114.111.254
-190.93.240.0/20		190.93.240.1  µ½ 190.93.255.254
-197.234.240.0/22	197.234.240.1  µ½ 197.234.243.254
-198.41.128.0/17		198.41.128.1  µ½ 198.41.255.254
+103.21.244.0/22		103.21.244.1  åˆ° 103.21.247.254
+103.22.200.0/22		103.22.200.1  åˆ° 103.22.203.254
+103.31.4.0/22		103.31.0.1  åˆ° 103.31.3.254
+104.16.0.0/13		255.16.0.1  åˆ° 255.23.255.254
+104.24.0.0/14		104.24.0.1  åˆ° 104.27.255.254
+108.162.192.0/18	108.162.192.1  åˆ° 108.162.255.254
+131.0.72.0/22		131.0.72.1  åˆ° 131.0.75.254
+141.101.64.0/18		141.101.64.1  åˆ° 141.101.127.254
+162.158.0.0/15		162.158.0.1  åˆ° 162.159.255.254
+172.64.0.0/13		172.64.0.1  åˆ° 172.71.255.254
+173.245.48.0/20		173.245.48.1  åˆ° 173.245.63.254
+188.114.96.0/20		188.114.96.1  åˆ° 188.114.111.254
+190.93.240.0/20		190.93.240.1  åˆ° 190.93.255.254
+197.234.240.0/22	197.234.240.1  åˆ° 197.234.243.254
+198.41.128.0/17		198.41.128.1  åˆ° 198.41.255.254
