@@ -91,8 +91,9 @@ goto :eof
 
 :meta
 setlocal enabledelayedexpansion
+Call :jip ip.txt
 if EXIST meta.txt del meta.txt
- 	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:%1 --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
+ 	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:!cfip! --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
 	set str=%%a
 	set str=!str:{=!
 	set str=!str:}=!
@@ -133,6 +134,15 @@ set str=%%i
 echo !str:longitude=经度! 
 )
 del meta.txt
+goto :eof
+
+:jip
+set cfip=aa
+for /f "delims=" %%i in (%1) do (
+set cfip=%%i
+echo 解析IP:!cfip!
+if !cfip! NEQ aa goto :eof
+)
 goto :eof
 
 
