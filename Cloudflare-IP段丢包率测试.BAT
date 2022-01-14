@@ -38,7 +38,7 @@ if %IP-CS%==c Set ip12=190.93&Set ip31=240&Set /a ip32=1+255&Call :生成IP
 if %IP-CS%==d Set ip12=198.41&Set ip31=128&Set /a ip32=1+255&Call :生成IP 
 if %IP-CS%==0 exit
 
-Call :取前N个 ip.txt,210
+rem Call :取前N个 ip.txt,210
 Call :N个IP ip.txt
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
@@ -63,7 +63,7 @@ pause&goto :eof
 
 :生成IP
 set count=%ip31%
-echo.>ip.txt
+type nul >ip.txt
 for /l %%i in (1,1,260)do (
 Set /a u1=!random!%%60+40
 TITLE  生成IP：%ip12%.!count!.!u1!
@@ -153,7 +153,7 @@ echo !str:clientIp=本机公网IP!
 )
 for /f "tokens=4 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:asn=自治域 AS! 
+echo !str:asn:=自治域:AS! 
 )
 for /f "tokens=5 delims=;" %%i in (meta.txt) do (
 set str=%%i
