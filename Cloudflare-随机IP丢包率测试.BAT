@@ -111,7 +111,7 @@ echo !str:clientIp=本机公网IP!
 )
 for /f "tokens=4 delims=;" %%i in (meta.txt) do (
 set str=%%i
-echo !str:asn=自治域 AS! 
+echo !str:asn:=自治域:AS! 
 )
 for /f "tokens=5 delims=;" %%i in (meta.txt) do (
 set str=%%i
