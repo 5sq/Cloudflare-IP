@@ -37,37 +37,31 @@ if %IP-CS%==b Set ip12=172.67&Set ip31=0&Set /a ip32=1+255&Call :生成IP
 if %IP-CS%==c Set ip12=190.93&Set ip31=240&Set /a ip32=1+255&Call :生成IP
 if %IP-CS%==d Set ip12=198.41&Set ip31=128&Set /a ip32=1+255&Call :生成IP 
 if %IP-CS%==0 exit
-
-rem Call :取前N个 ip.txt,210
-Call :N个IP ip.txt
+rem Call :取前N个 %tmp%\ip.txt,30
+Call :N个IP %tmp%\ip.txt
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
 echo 测试%countIP% CF节点ICMP 丢包率
 echo ==================================================================
 Call :PingCF
 echo ==================================================================
-Call :N个IP ip.txt
+Call :N个IP %tmp%\ip.txt
 echo CF节点ICMP测试，没有丢包的 %countIP% 个IP:
 title CF节点ICMP测试，没有丢包的 %countIP% 个IP:
 echo ==================================================================
-type ip.txt
-echo ---------------------------------------------------------
-echo 测速通过没有丢包的%countIP%个CF节点
-title 测速通过没有丢包的%countIP%个CF节点
 Call :meta
 echo ==================================================================
-type ip.txt >没有丢包的%countIP%个IP.txt
-del ip.txt ip2.txt meta.txt ping.csv
+del %tmp%\ip.txt %tmp%\ip2.txt %tmp%\meta.txt %tmp%\ping.csv
 pause&goto :eof
 
 
 :生成IP
 set count=%ip31%
-type nul >ip.txt
+type nul >%tmp%\ip.txt
 for /l %%i in (1,1,260)do (
 Set /a u1=!random!%%60+40
 TITLE  生成IP：%ip12%.!count!.!u1!
-echo %ip12%.!count!.!u1!>> ip.txt
+echo %ip12%.!count!.!u1!>> %tmp%\ip.txt
 set /a count+=1
 if !count! equ %ip32% goto :eof
 )
@@ -92,90 +86,92 @@ for /f "tokens=1,2" %%a in (%1) do (set /a countIP+=1)
 goto :eof
 
 :PingCF
-if EXIST "%~dp0tmp" rd /s /q "%~dp0tmp"
-mkdir tmp
-if EXIST ping.csv del ping.csv
+if EXIST "%tmp%\tmp" rd /s /q "%tmp%\tmp"
+mkdir %tmp%\tmp
+if EXIST %tmp%\ping.csv del %tmp%\ping.csv
 set n=30
 Set n1=1
-powershell -c "$n=1;$m=1;gc 'ip.txt'|%%{$f='tmp\'+$m+'.txt';$_>>$f;if($n%%%n% -eq 0){$m++};$n++}" 
-for /r "%~dp0tmp" %%i in (*.txt) do (
+powershell -c "$n=1;$m=1;gc '%tmp%\ip.txt'|%%{$f='%tmp%\tmp\'+$m+'.txt';$_>>$f;if($n%%%n% -eq 0){$m++};$n++}" 
+for /r "%tmp%\tmp" %%i in (*.txt) do (
 set /a n2=!n1!*30
 if !n2! GTR %countIP% set /a n2=%countIP%
 title 已测试 !n2!/%countIP% CF节点ICMP 丢包率
-if EXIST %%i more %%i>a.txt
-if EXIST a.txt fping -f a.txt -c 20 --interval=0 -s >temp.csv
-if EXIST temp.csv more +1 temp.csv>>ping.csv
+if EXIST %%i more %%i>%tmp%\a.txt
+if EXIST %tmp%\a.txt fping -f %tmp%\a.txt -c 20 --interval=0 -s >%tmp%\temp.csv
+if EXIST %tmp%\temp.csv more +1 %tmp%\temp.csv>>%tmp%\ping.csv
 if EXIST %%i del %%i
-if EXIST a.txt del a.txt
+if EXIST %tmp%\a.txt del %tmp%\a.txt
 set /a n1+=1
 )
-if EXIST "%~dp0tmp" rd /s /q "%~dp0tmp"
-more ping.csv>temp.csv
+if EXIST "%tmp%\tmp" rd /s /q "%tmp%\tmp"
+more %tmp%\ping.csv>%tmp%\temp.csv
+cls
 echo ==================================================================
 echo IP地址		发送	接收	平均	最少	最多	
 echo ==================================================================
 setlocal
-del ping.csv
-for /f "tokens=1-7 delims=," %%a in (temp.csv) do (if %%d equ 20 (echo %%a,%%b,%%c,%%d,%%e,%%f,%%g>>ping.csv))
-del temp.csv
-for /F "tokens=1-7 delims=," %%a in (ping.csv) do set "a[%%e,%%f,%%g,%%a,%%b,%%c,%%d]=%%"
-del ping.csv
-for /F "tokens=1-8 delims=[,]=" %%a in ('set a[') do echo %%a,%%b,%%c,%%d,%%e,%%f,%%g,%%h >>ping.csv
-del ip.txt tmp.csv temp.csv
-set count=0
-for /F "tokens=1-8 delims=," %%a in (ping.csv) do (
-set /a count+=1
+del %tmp%\ping.csv
+for /f "tokens=1-7 delims=," %%a in (%tmp%\temp.csv) do (if %%d equ 20 (echo %%a,%%b,%%c,%%d,%%e,%%f,%%g>>%tmp%\ping.csv))
+del %tmp%\temp.csv
+for /F "tokens=1-7 delims=," %%a in (%tmp%\ping.csv) do set "a[%%e,%%f,%%g,%%a,%%b,%%c,%%d]=%%"
+del %tmp%\ping.csv
+for /F "tokens=1-8 delims=[,]=" %%a in ('set a[') do echo %%a,%%b,%%c,%%d,%%e,%%f,%%g,%%h >>%tmp%\ping.csv
+del %tmp%\ip.txt %tmp%\tmp.csv %tmp%\temp.csv
+Call :N个IP %tmp%\ping.csv
+echo IP地址,平均延迟> 没有丢包的%countIP%个IP.csv
+for /F "tokens=1-8 delims=," %%a in (%tmp%\ping.csv) do (
 echo %%e	%%g	%%h	%%b	%%c	%%d
-echo %%e >>ip.txt
+echo %%e >>%tmp%\ip.txt
+echo %%e,%%b >> 没有丢包的%countIP%个IP.csv
 )
 endlocal
 goto :eof
 
 :meta
 setlocal enabledelayedexpansion
-Call :jip ip.txt
-if EXIST meta.txt del meta.txt
+Call :jip %tmp%\ip.txt
+if EXIST %tmp%\meta.txt del %tmp%\meta.txt
  	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:!cfip! --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
 	set str=%%a
 	set str=!str:{=!
 	set str=!str:}=!
 	set str=!str:"=!
 	echo !str:,=%;!
-	)>meta.txt
+	)>%tmp%\meta.txt
 
-for /f "tokens=1 delims=;" %%i in (meta.txt) do (
+for /f "tokens=1 delims=;" %%i in (%tmp%\meta.txt) do (
 set str=%%i
 echo !str:hostname=远端主机名! 
 )
-for /f "tokens=2 delims=;" %%i in (meta.txt) do (
+for /f "tokens=2 delims=;" %%i in (%tmp%\meta.txt) do (
 set str=%%i
 echo !str:clientIp=本机公网IP! 
 )
-for /f "tokens=4 delims=;" %%i in (meta.txt) do (
+for /f "tokens=4 delims=;" %%i in (%tmp%\meta.txt) do (
 set str=%%i
 echo !str:asn:=自治域:AS! 
 )
-for /f "tokens=5 delims=;" %%i in (meta.txt) do (
+for /f "tokens=5 delims=;" %%i in (%tmp%\meta.txt) do (
 set str=%%i
 echo !str:colo=数据中心! 
 )
-for /f "tokens=6 delims=;" %%i in (meta.txt) do (
+for /f "tokens=6 delims=;" %%i in (%tmp%\meta.txt) do (
 set str=%%i
 echo !str:country=所在国家! 
 )
-for /f "tokens=7 delims=;" %%i in (meta.txt) do (
+for /f "tokens=7 delims=;" %%i in (%tmp%\meta.txt) do (
 set str=%%i
 echo !str:city=所在城市!
 )
-for /f "tokens=8 delims=;" %%i in (meta.txt) do (
+for /f "tokens=8 delims=;" %%i in (%tmp%\meta.txt) do (
 set str=%%i
 echo !str:latitude=纬度! 
 )
-for /f "tokens=9 delims=;" %%i in (meta.txt) do (
+for /f "tokens=9 delims=;" %%i in (%tmp%\meta.txt) do (
 set str=%%i
 echo !str:longitude=经度! 
 )
-del meta.txt
+del %tmp%\meta.txt
 goto :eof
 
 :jip
@@ -186,6 +182,7 @@ echo 解析IP:!cfip!
 if !cfip! NEQ aa goto :eof
 )
 goto :eof
+
 pause&goto :eof
 
 ==================bak==================
