@@ -116,13 +116,13 @@ del %tmp%\temp.csv
 for /F "tokens=1-7 delims=," %%a in (%tmp%\ping.csv) do set "a[%%e,%%f,%%g,%%a,%%b,%%c,%%d]=%%"
 del %tmp%\ping.csv
 for /F "tokens=1-8 delims=[,]=" %%a in ('set a[') do echo %%a,%%b,%%c,%%d,%%e,%%f,%%g,%%h >>%tmp%\ping.csv
-del %tmp%\ip.txt %tmp%\tmp.csv %tmp%\temp.csv
+del %tmp%\ip.txt
 Call :N个IP %tmp%\ping.csv
-echo IP地址,平均延迟> 没有丢包的%countIP%个IP.csv
+echo IP地址,平均延迟> %ip12%IP段没有丢包的%countIP%个IP.csv
 for /F "tokens=1-8 delims=," %%a in (%tmp%\ping.csv) do (
 echo %%e	%%g	%%h	%%b	%%c	%%d
 echo %%e >>%tmp%\ip.txt
-echo %%e,%%b >> 没有丢包的%countIP%个IP.csv
+echo %%e,%%b >> %ip12%IP段没有丢包的%countIP%个IP.csv
 )
 endlocal
 goto :eof
@@ -130,6 +130,7 @@ goto :eof
 :meta
 setlocal enabledelayedexpansion
 Call :jip %tmp%\ip.txt
+echo 解析IP:!cfip!
 if EXIST %tmp%\meta.txt del %tmp%\meta.txt
  	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:!cfip! --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
 	set str=%%a
@@ -175,11 +176,8 @@ del %tmp%\meta.txt
 goto :eof
 
 :jip
-set cfip=aa
 for /f "delims=" %%i in (%1) do (
 set cfip=%%i
-echo 解析IP:!cfip!
-if !cfip! NEQ aa goto :eof
 )
 goto :eof
 
