@@ -11,7 +11,7 @@ findstr "%numN%" %tmp%\ip1.txt > %tmp%\ip.txt
 Call :N个IP %tmp%\ip.txt
 set /a nu=%countIP%/30*30
 Call :取前N个 %tmp%\ip.txt,%nu%
-Call :取前N个 %tmp%\ip.txt,120
+Call :取前N个 %tmp%\ip.txt,210
 Call :N个IP %tmp%\ip.txt
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
@@ -79,11 +79,11 @@ for /F "tokens=1-8 delims=[,]=" %%a in ('set a[') do echo %%a,%%b,%%c,%%d,%%e,%%
 rem findstr "104.19" ping.csv >temp.csv&&sort /+3 /r temp.csv>tmp.csv&&findstr /v "104.19" ping.csv >>tmp.csv&&more tmp.csv>ping.csv
 del %tmp%\ip.txt %tmp%\tmp.csv %tmp%\temp.csv
 Call :N个IP %tmp%\ping.csv
-echo IP地址,平均延迟> 没有丢包的%countIP%个IP.csv
+echo IP地址,平均延迟> %numN%-没有丢包的%countIP%个IP.csv
 for /F "tokens=1-8 delims=," %%a in (%tmp%\ping.csv) do (
 echo %%e	%%g	%%h	%%b	%%c	%%d
 echo %%e >>%tmp%\ip.txt
-echo %%e,%%b >> 没有丢包的%countIP%个IP.csv
+echo %%e,%%b >> %numN%-没有丢包的%countIP%个IP.csv
 )
 endlocal
 goto :eof
@@ -91,6 +91,7 @@ goto :eof
 :meta
 setlocal enabledelayedexpansion
 Call :jip %tmp%\ip.txt
+echo 解析IP:!cfip!
 if EXIST %tmp%\meta.txt del %tmp%\meta.txt
  	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:!cfip! --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
 	set str=%%a
@@ -136,11 +137,8 @@ del %tmp%\meta.txt
 goto :eof
 
 :jip
-set cfip=aa
 for /f "delims=" %%i in (%1) do (
 set cfip=%%i
-echo 解析IP:!cfip!
-if !cfip! NEQ aa goto :eof
 )
 goto :eof
 
