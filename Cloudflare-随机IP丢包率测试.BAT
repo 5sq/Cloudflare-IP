@@ -1,8 +1,17 @@
 @echo off &chcp 936 >NUL&color A & cd "%~dp0" &TITLE cloudflareIP测速
 CLS
 setlocal enabledelayedexpansion
+:menu
 set numN=%random%
-set /a numN=numN%%60+40
+set /a numN=numN%%50+50
+if %numN% equ 59 goto :menu
+if %numN% equ 62 goto :menu
+if %numN% equ 64 goto :menu
+if %numN% equ 67 goto :menu
+if %numN% equ 72 goto :menu
+if %numN% equ 90 goto :menu
+if %numN% equ 93 goto :menu
+if %numN% equ 98 goto :menu
 set tph=%tmp%\%numN%\
 mkdir %tph%
 TITLE 获取cloudflare IP
@@ -13,7 +22,7 @@ findstr "%numN%" %tph%ip1.txt > %tph%ip.txt
 Call :N个IP %tph%ip.txt
 set /a nu=%countIP%/30*30
 Call :取前N个 %tph%ip.txt,%nu%
-Call :取前N个 %tph%ip.txt,210
+Call :取前N个 %tph%ip.txt,300
 Call :N个IP %tph%ip.txt
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
