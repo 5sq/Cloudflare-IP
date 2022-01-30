@@ -30,9 +30,16 @@ echo 测试%countIP% CF节点ICMP 丢包率
 echo ==================================================================
 Call :PingCF
 echo ==================================================================
-Call :N个IP %tph%ip.txt
+Call :N个IP %tph%SortIP.csv
 echo CF节点ICMP测试，没有丢包的 %countIP% 个IP:
 title  CF节点ICMP测试，没有丢包的 %countIP% 个IP:
+echo ==================================================================
+echo 测试连接CF节点可用IP…………
+Call :CF可用IP %tph%SortIP.csv
+Call :N个IP %tph%SortIP.csv
+echo CF可用IP: %countIP% 个
+echo CF可用IP,响应时间 > %numN%_%countIP%个CF可用IP.csv
+type %tph%SortIP.csv >> %numN%_%countIP%个CF可用IP.csv
 echo ==================================================================
 Call :meta
 echo ==================================================================
@@ -88,70 +95,50 @@ for /F "tokens=1-7 delims=," %%a in (%tph%ping.csv) do set "a[%%e,%%f,%%g,%%a,%%
 del %tph%ping.csv
 for /F "tokens=1-8 delims=[,]=" %%a in ('set a[') do echo %%a,%%b,%%c,%%d,%%e,%%f,%%g,%%h >>%tph%ping.csv
 del %tph%ip.txt %tph%tmp.csv %tph%temp.csv
-Call :N个IP %tph%ping.csv
-echo IP地址,平均延迟> %numN%-没有丢包的%countIP%个IP.csv
+type nul > %tph%SortIP.csv
 for /F "tokens=1-8 delims=," %%a in (%tph%ping.csv) do (
 echo %%e	%%g	%%h	%%b	%%c	%%d
-echo %%e >>%tph%ip.txt
-echo %%e,%%b >> %numN%-没有丢包的%countIP%个IP.csv
+echo %%e,%%b >> %tph%SortIP.csv
 )
 endlocal
 goto :eof
 
 :meta
 setlocal enabledelayedexpansion
-Call :jip %tph%ip.txt
-echo 解析IP:!cfip!
-if EXIST %tph%meta.txt del %tph%meta.txt
+echo CF节点连接测试回应：
+Call :jip %tph%SortIP.csv
+type nul > %tph%meta.txt
  	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:!cfip! --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
 	set str=%%a
 	set str=!str:{=!
 	set str=!str:}=!
 	set str=!str:"=!
-	echo !str:,=%;!
-	)>%tph%meta.txt
-
-for /f "tokens=1 delims=;" %%i in (%tph%meta.txt) do (
+	echo !str!
+	)>  %tph%meta.txt
+	
+set /a a=1
+:meta2
+if %a% LEQ 15 (
+for /f "tokens=%a% delims=," %%i in (%tph%meta.txt) do (
 set str=%%i
-echo !str:hostname=远端主机名! 
+echo !str! 
 )
-for /f "tokens=2 delims=;" %%i in (%tph%meta.txt) do (
-set str=%%i
-echo !str:clientIp=本机公网IP! 
+set /a a=%a%+1
+goto meta2
 )
-for /f "tokens=4 delims=;" %%i in (%tph%meta.txt) do (
-set str=%%i
-echo !str:asn:=自治域:AS! 
-)
-for /f "tokens=5 delims=;" %%i in (%tph%meta.txt) do (
-set str=%%i
-echo !str:colo=数据中心! 
-)
-for /f "tokens=6 delims=;" %%i in (%tph%meta.txt) do (
-set str=%%i
-echo !str:country=所在国家! 
-)
-for /f "tokens=7 delims=;" %%i in (%tph%meta.txt) do (
-set str=%%i
-echo !str:city=所在城市!
-)
-for /f "tokens=8 delims=;" %%i in (%tph%meta.txt) do (
-set str=%%i
-echo !str:latitude=纬度! 
-)
-for /f "tokens=9 delims=;" %%i in (%tph%meta.txt) do (
-set str=%%i
-echo !str:longitude=经度! 
-)
-del %tph%meta.txt
 goto :eof
 
 :jip
-for /f "delims=" %%i in (%1) do (
+for /f "tokens=1 delims=," %%i in (%1) do (
 set cfip=%%i
 )
 goto :eof
 
+:CF可用IP
+type nul >%tph%1.txt
+for /f "tokens=1-2 delims=," %%a in (%1) do (curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o nul -s --connect-timeout 1 --max-time 1 && echo %%a,%%b >>%tph%1.txt && TITLE  CF可用IP:%%a)
+type %tph%1.txt > %1
+goto :eof
 
 pause&goto :eof
 
