@@ -19,11 +19,15 @@ forfiles /m Cloudflare-IP.txt /s /d -100 /c "cmd /c del /f /s /q @path" & cls
 if not EXIST Cloudflare-IP.txt echo 请到 https^://github.com/5sq/Cloudflare-IP 下载Cloudflare-IP.txt到当前目录。 && pause&&goto :eof
 type Cloudflare-IP.txt > %tph%ip1.txt
 findstr "%numN%" %tph%ip1.txt > %tph%ip.txt
+echo ==================================================================
+echo 测试连接CF节点可用IP…………
+Call :CF可用IP  %tph%ip.txt
 Call :N个IP %tph%ip.txt
 set /a nu=%countIP%/30*30
 Call :取前N个 %tph%ip.txt,%nu%
 Call :取前N个 %tph%ip.txt,300
-Call :N个IP %tph%ip.txt
+Call :N个IP  %tph%ip.txt
+echo CF可用IP: %countIP% 个
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
 echo 测试%countIP% CF节点ICMP 丢包率
@@ -33,11 +37,6 @@ echo ==================================================================
 Call :N个IP %tph%SortIP.csv
 echo CF节点ICMP测试，没有丢包的 %countIP% 个IP:
 title  CF节点ICMP测试，没有丢包的 %countIP% 个IP:
-echo ==================================================================
-echo 测试连接CF节点可用IP…………
-Call :CF可用IP %tph%SortIP.csv
-Call :N个IP %tph%SortIP.csv
-echo CF可用IP: %countIP% 个
 echo CF可用IP,响应时间 > %numN%_%countIP%个CF可用IP.csv
 type %tph%SortIP.csv >> %numN%_%countIP%个CF可用IP.csv
 echo ==================================================================
@@ -75,7 +74,7 @@ set /a n2=!n1!*30
 if !n2! GTR %countIP% set /a n2=%countIP%
 title 已测试 !n2!/%countIP% CF节点ICMP 丢包率
 if EXIST %%i more %%i>%tph%a.txt
-if EXIST %tph%a.txt fping -f %tph%a.txt -c 20 --interval=0 -s >%tph%temp.csv
+if EXIST %tph%a.txt fping -f %tph%a.txt -c 10 --interval=0 -s >%tph%temp.csv
 if EXIST %tph%temp.csv more +1 %tph%temp.csv>>%tph%ping.csv
 if EXIST %%i del %%i
 if EXIST %tph%a.txt del %tph%a.txt
@@ -89,7 +88,7 @@ echo IP地址		发送	接收	平均	最少	最多
 echo ==================================================================
 setlocal
 del %tph%ping.csv
-for /f "tokens=1-7 delims=," %%a in (%tph%temp.csv) do (if %%d equ 20 (echo %%a,%%b,%%c,%%d,%%e,%%f,%%g>>%tph%ping.csv))
+for /f "tokens=1-7 delims=," %%a in (%tph%temp.csv) do (if %%d equ 10 (echo %%a,%%b,%%c,%%d,%%e,%%f,%%g>>%tph%ping.csv))
 del %tph%temp.csv
 for /F "tokens=1-7 delims=," %%a in (%tph%ping.csv) do set "a[%%e,%%f,%%g,%%a,%%b,%%c,%%d]=%%"
 del %tph%ping.csv
@@ -105,8 +104,8 @@ goto :eof
 
 :meta
 setlocal enabledelayedexpansion
-echo CF节点连接测试回应：
 Call :jip %tph%SortIP.csv
+echo !cfip!CF节点连接测试回应：
 type nul > %tph%meta.txt
  	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:!cfip! --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
 	set str=%%a
@@ -135,10 +134,13 @@ set cfip=%%i
 goto :eof
 
 :CF可用IP
-type nul >%tph%1.txt
-for /f "tokens=1-2 delims=," %%a in (%1) do (curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o nul -s --connect-timeout 1 --max-time 1 && echo %%a,%%b >>%tph%1.txt && TITLE  CF可用IP:%%a)
-type %tph%1.txt > %1
+if EXIST "%tmp%\temp" rd /s /q "%tmp%\temp"
+mkdir %tmp%\temp
+for /f "delims=" %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tmp%\temp\%%a -s --connect-timeout 3 --max-time 3 && TITLE  CF可用IP:%%a)
+timeout /T 5 /NOBREAK
+dir /o:-s /b %tmp%\temp >%1
 goto :eof
+
 
 pause&goto :eof
 
