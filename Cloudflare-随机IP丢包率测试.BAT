@@ -134,11 +134,11 @@ set cfip=%%i
 goto :eof
 
 :CF可用IP
-if EXIST "%tmp%\temp" rd /s /q "%tmp%\temp"
-mkdir %tmp%\temp
-for /f "delims=" %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tmp%\temp\%%a -s --connect-timeout 3 --max-time 3 && TITLE  CF可用IP:%%a)
-timeout /T 5 /NOBREAK
-dir /o:-s /b %tmp%\temp >%1
+if EXIST "%tph%temp" rd /s /q "%tph%temp"
+mkdir %tph%temp
+for /f "delims=" %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE  CF可用IP:%%a)
+timeout /T 3 /NOBREAK
+dir /o:-s /b %tph%temp >%1
 goto :eof
 
 
