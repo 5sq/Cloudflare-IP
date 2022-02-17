@@ -46,17 +46,17 @@ Call :N个IP %tph%ip.txt
 set /a nu=%countIP%/30*30
 Call :取前N个 %tph%ip.txt,%nu%
 Call :N个IP  %tph%ip.txt
-echo CF可用IP: %countIP% 个
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
 echo 测试%countIP% CF节点ICMP 丢包率
 echo ==================================================================
 Call :PingCF
 echo ==================================================================
+Call :N个IP %tph%tip.txt
+Set tip=%countIP%
 Call :N个IP %tph%SortIP.csv
-echo CF节点ICMP测试，没有丢包的 %countIP% 个IP:
-title CF节点ICMP测试，没有丢包的 %countIP% 个IP:
-echo ==================================================================
+echo CF可用IP %tip% 个；CF节点ICMP测试，没有丢包的 %countIP% 个IP:
+title CF可用IP %tip% 个；CF节点ICMP测试，没有丢包的 %countIP% 个IP:
 echo CF可用IP,响应时间 > %ip12%_%countIP%个CF可用IP.csv
 type %tph%SortIP.csv >> %ip12%_%countIP%个CF可用IP.csv
 echo ==================================================================
@@ -70,7 +70,7 @@ pause&goto :eof
 set count=%ip31%
 type nul >%tph%ip.txt
 for /l %%i in (1,1,260)do (
-Set /a u1=!random!%%60+40
+Set /a u1=!random!%%255
 TITLE  生成IP：%ip12%.!count!.!u1!
 echo %ip12%.!count!.!u1!>> %tph%ip.txt
 set /a count+=1
@@ -80,21 +80,21 @@ goto :eof
 
 
 :取前N个
-type %1>%1_tmp.txt
-del %1
+type %1>%tph%_tmp.txt
+type nul > %1
 set count=0
-for /f "tokens=1,2" %%a in (%1_tmp.txt) do (
-echo %%a >> %1
+for /f "delims=" %%a in (%tph%_tmp.txt) do (
+echo %%a>> %1
 set /a count+=1
-if !count! equ %2 del %1_tmp.txt >nul&&goto :eof
+if !count! equ %2 goto :eof
 )
-del %1_tmp.txt >nul
 goto :eof
 
 :N个IP
 set countIP=0
-for /f "tokens=1,2" %%a in (%1) do (set /a countIP+=1)
+for /f "delims=" %%a in (%1) do (set /a countIP+=1)
 goto :eof
+
 
 :PingCF
 if EXIST "%tph%tmp" rd /s /q "%tph%tmp"
@@ -174,6 +174,7 @@ mkdir %tph%temp
 for /f "delims=" %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE  CF可用IP:%%a)
 timeout /T 3 /NOBREAK
 dir /o:-s /b %tph%temp >%1
+dir /o:-s /b %tph%temp >%tph%tip.txt
 goto :eof
 
 pause&goto :eof
