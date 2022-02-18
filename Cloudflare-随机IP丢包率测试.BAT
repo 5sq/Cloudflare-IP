@@ -4,10 +4,6 @@ setlocal enabledelayedexpansion
 :menu
 set numN=%random%
 set /a numN=numN%%30+70
-REM if %numN% equ 59 goto :menu
-REM if %numN% equ 62 goto :menu
-REM if %numN% equ 64 goto :menu
-REM if %numN% equ 67 goto :menu
 if %numN% equ 72 goto :menu
 if %numN% equ 90 goto :menu
 if %numN% equ 93 goto :menu
