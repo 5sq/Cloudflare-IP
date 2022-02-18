@@ -4,6 +4,10 @@ setlocal enabledelayedexpansion
 :menu
 set numN=%random%
 set /a numN=numN%%30+70
+REM if %numN% equ 59 goto :menu
+REM if %numN% equ 62 goto :menu
+REM if %numN% equ 64 goto :menu
+REM if %numN% equ 67 goto :menu
 if %numN% equ 72 goto :menu
 if %numN% equ 90 goto :menu
 if %numN% equ 93 goto :menu
@@ -17,6 +21,7 @@ type Cloudflare-IP.txt > %tph%ip1.txt
 findstr "%numN%" %tph%ip1.txt > %tph%ip.txt
 echo ==================================================================
 echo 测试连接CF节点可用IP…………
+set /a a=1
 Call :CF可用IP  %tph%ip.txt
 Call :N个IP %tph%ip.txt
 set /a nu=%countIP%/30*30
@@ -130,12 +135,15 @@ set cfip=%%i
 goto :eof
 
 :CF可用IP
+if !a! LEQ 5 (
 if EXIST "%tph%temp" rd /s /q "%tph%temp"
 mkdir %tph%temp
-for /f "delims=" %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE  CF可用IP:%%a)
-timeout /T 3 /NOBREAK
-dir /o:-s /b %tph%temp >%1
-dir /o:-s /b %tph%temp >%tph%tip.txt
+for /f "delims=" %%a in (%1) do (start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/meta -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
+timeout /T 3 /NOBREAK >nul&&dir /o:-s /b %tph%temp >%1&&dir /o:-s %tph%temp\|findstr "%date:~0,10%"|findstr /I /V "dir">%tph%tip.txt&&rd /s /q %tph%temp&&Call :N个IP %tph%tip.txt
+echo 完成CF节点第 !a! 批次连接测试；可用IP：!countIP! 个。
+set /a a=a+1
+goto CF可用IP
+)
 goto :eof
 
 
