@@ -61,7 +61,9 @@ title CF可用IP %tip% 个；CF节点ICMP测试，没有丢包的 %countIP% 个I
 echo CF可用IP,响应时间 > %ip12%_%countIP%个CF可用IP.csv
 type %tph%SortIP.csv >> %ip12%_%countIP%个CF可用IP.csv
 echo ==================================================================
-Call :meta
+Call :jip %tph%SortIP.csv
+echo !cfip!CF节点连接测试回应：
+curl --resolve www.cloudflare.com:443:!cfip! https://www.cloudflare.com/cdn-cgi/trace
 echo ==================================================================
 rd /s /q %tph%
 pause&goto :eof
@@ -137,32 +139,6 @@ echo %%e,%%b >> %tph%SortIP.csv
 endlocal
 goto :eof
 
-:meta
-setlocal enabledelayedexpansion
-Call :jip %tph%SortIP.csv 
-echo !cfip!CF节点连接测试回应：
-type nul > %tph%meta.txt
- 	for /f "delims=" %%a in ('curl --resolve speed.cloudflare.com:443:!cfip! --ipv4 --retry 3 -s https://speed.cloudflare.com/meta') do (
-	set str=%%a
-	set str=!str:{=!
-	set str=!str:}=!
-	set str=!str:"=!
-	echo !str!
-	)>  %tph%meta.txt
-	
-set /a a=1
-:meta2
-if %a% LEQ 15 (
-for /f "tokens=%a% delims=," %%i in (%tph%meta.txt) do (
-set str=%%i
-echo !str!
-)
-set /a a=%a%+1
-goto meta2
-)
-del %tph%meta.txt
-goto :eof
-
 :jip
 for /f "tokens=1 delims=," %%i in (%1) do (
 set cfip=%%i
@@ -173,7 +149,7 @@ goto :eof
 if !a! LEQ 5 (
 if EXIST "%tph%temp" rd /s /q "%tph%temp"
 mkdir %tph%temp
-for /f "delims=" %%a in (%1) do (start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/meta -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
+for /f "delims=" %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
 timeout /T 3 /NOBREAK >nul&&dir /o:-s /b %tph%temp >%1&&dir /o:-s %tph%temp\|findstr "%date:~0,10%"|findstr /I /V "dir">%tph%tip.txt&&rd /s /q %tph%temp&&Call :N个IP %tph%tip.txt
 echo 完成CF节点第 !a! 批次连接测试；可用IP：!countIP! 个。
 set /a a=a+1
