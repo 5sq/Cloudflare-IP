@@ -22,7 +22,6 @@ Call :CF可用IP  %tph%ip.txt
 Call :N个IP %tph%ip.txt
 set /a nu=%countIP%/30*30
 Call :取前N个 %tph%ip.txt,%nu%
-rem Call :取前N个 %tph%ip.txt,300
 Call :N个IP  %tph%ip.txt
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
