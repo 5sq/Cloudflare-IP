@@ -44,9 +44,6 @@ echo 测试连接CF节点可用IP…………
 set /a a=1
 Call :CF可用IP  %tph%ip.txt
 Call :N个IP %tph%ip.txt
-set /a nu=%countIP%/30*30
-Call :取前N个 %tph%ip.txt,%nu%
-Call :N个IP  %tph%ip.txt
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
 echo 测试%countIP% CF节点ICMP 丢包率
