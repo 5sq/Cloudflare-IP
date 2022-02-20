@@ -53,14 +53,12 @@ echo ==================================================================
 Call :N个IP %tph%tip.txt
 Set tip=%countIP%
 Call :N个IP %tph%SortIP.csv
-echo CF可用IP %tip% 个；CF节点ICMP测试，没有丢包的 %countIP% 个IP:
-title CF可用IP %tip% 个；CF节点ICMP测试，没有丢包的 %countIP% 个IP:
+echo CF可用IP %tip% 个；CF节点ICMP测试，没有丢包的 %countIP% 个IP。
+title CF可用IP %tip% 个；CF节点ICMP测试，没有丢包的 %countIP% 个IP。
 echo CF可用IP,响应时间 > %ip12%_%countIP%个CF可用IP.csv
 type %tph%SortIP.csv >> %ip12%_%countIP%个CF可用IP.csv
 echo ==================================================================
-Call :jip %tph%SortIP.csv
-echo !cfip!CF节点连接测试回应：
-curl --resolve www.cloudflare.com:443:!cfip! https://www.cloudflare.com/cdn-cgi/trace
+Call :meta3
 echo ==================================================================
 rd /s /q %tph%
 pause&goto :eof
@@ -99,7 +97,7 @@ goto :eof
 :PingCF
 if EXIST "%tph%tmp" rd /s /q "%tph%tmp"
 mkdir %tph%tmp
-if EXIST %tph%ping.csv del %tph%ping.csv
+type nul > %tph%ping.csv
 set n=30
 Set n1=1
 powershell -c "$n=1;$m=1;gc '%tph%ip.txt'|%%{$f='%tph%tmp\'+$m+'.txt';$_>>$f;if($n%%%n% -eq 0){$m++};$n++}" 
@@ -140,6 +138,12 @@ goto :eof
 for /f "tokens=1 delims=," %%i in (%1) do (
 set cfip=%%i
 )
+goto :eof
+
+:meta3
+Call :jip %tph%SortIP.csv
+echo !cfip! CF节点连接测试回应：
+curl --ipv4 --retry 3 --resolve www.cloudflare.com:443:!cfip! https://www.cloudflare.com/cdn-cgi/trace
 goto :eof
 
 :CF可用IP
