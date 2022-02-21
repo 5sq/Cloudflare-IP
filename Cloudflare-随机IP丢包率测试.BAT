@@ -102,7 +102,7 @@ if EXIST "%tph%temp" rd /s /q "%tph%temp"
 mkdir %tph%temp
 for /f "delims=" %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
 timeout /T 3 /NOBREAK >nul&&dir /o:-s /b %tph%temp >%1&&dir /o:-s %tph%temp\|findstr "%date:~0,10%"|findstr /I /V "dir">%tph%tip.txt&&rd /s /q %tph%temp&&Call :N个IP %tph%tip.txt
-echo 完成CF节点第 !a! 批次连接测试；可用IP：!countIP! 个。
+echo 完成第 !a! 次 www.cloudflare.com 连接测试；可用IP：!countIP! 个。
 set /a a=a+1
 goto CF可用IP
 )
