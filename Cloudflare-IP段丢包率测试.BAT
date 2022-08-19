@@ -1,24 +1,24 @@
 @echo off &chcp 936 >NUL &  color A & cd "%~dp0" &TITLE cloudflareIP测速
 setlocal enabledelayedexpansion
 TITLE 获取cloudflare IP
-
 cls
-TITLE 当前可用IP段(推荐选择：104.19、104.18、104.17、104.16)
-echo 当前可用IP段(推荐选择：104.19、104.18、104.17、104.16)
+TITLE 当前可用IP段
+echo 当前可用IP段
 echo ==================================================================
 echo 1、（104.16）
 echo 2、（104.17）
 echo 3、（104.18）
 echo 4、（104.19）
-echo 5、（104.21）
-echo 6、（104.24）
-echo 7、（104.25）
-echo 8、（104.27）
-echo 9、（162.159）
-echo a、（172.64）
-echo b、（172.67）
-echo c、（190.93）
-echo d、（198.41）
+echo 5、（104.20）
+echo 6、（104.21）
+echo 7、（104.24）
+echo 8、（104.25）
+echo 9、（104.27）
+echo a、（162.159）
+echo b、（172.64）
+echo c、（172.67）
+echo d、（190.93）
+echo e、（198.41）
 echo 0、（退出）
 echo ==================================================================
 set /p IP-CS=请选择IP段菜单：
@@ -29,18 +29,20 @@ if %IP-CS%==1 Set ip12=104.16&Set ip31=0&Set /a ip32=1+255&Call :生成IP
 if %IP-CS%==2 Set ip12=104.17&Set ip31=0&Set /a ip32=1+255&Call :生成IP
 if %IP-CS%==3 Set ip12=104.18&Set ip31=0&Set /a ip32=1+255&Call :生成IP
 if %IP-CS%==4 Set ip12=104.19&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==5 Set ip12=104.21&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==6 Set ip12=104.24&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==7 Set ip12=104.25&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==8 Set ip12=104.27&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==9 Set ip12=162.159&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==a Set ip12=172.64&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==b Set ip12=172.67&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==c Set ip12=190.93&Set ip31=240&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==d Set ip12=198.41&Set ip31=128&Set /a ip32=1+255&Call :生成IP 
+if %IP-CS%==5 Set ip12=104.20&Set ip31=0&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==6 Set ip12=104.21&Set ip31=0&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==7 Set ip12=104.24&Set ip31=0&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==8 Set ip12=104.25&Set ip31=0&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==9 Set ip12=104.27&Set ip31=0&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==a Set ip12=162.159&Set ip31=0&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==b Set ip12=172.64&Set ip31=0&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==c Set ip12=172.67&Set ip31=0&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==d Set ip12=190.93&Set ip31=240&Set /a ip32=1+255&Call :生成IP
+if %IP-CS%==e Set ip12=198.41&Set ip31=128&Set /a ip32=1+255&Call :生成IP 
 if %IP-CS%==0 exit
 echo ==================================================================
-echo 测试连接CF节点可用IP…………
+Call :N个IP %tph%ip.txt
+echo %countIP%个IP 测试连接CF节点可用IP…………
 set /a a=1
 Call :CF可用IP  %tph%ip.txt
 Call :N个IP %tph%ip.txt
@@ -147,14 +149,28 @@ curl --ipv4 --retry 3 --resolve www.cloudflare.com:443:!cfip! https://www.cloudf
 goto :eof
 
 :CF可用IP
-if !a! LEQ 5 (
+if !a! LEQ 3 (
 if EXIST "%tph%temp" rd /s /q "%tph%temp"
 mkdir %tph%temp
-for /f "delims=" %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
-timeout /T 3 /NOBREAK >nul&&dir /o:-s /b %tph%temp >%1&&dir /o:-s %tph%temp\|findstr "%date:~0,10%"|findstr /I /V "dir">%tph%tip.txt&&rd /s /q %tph%temp&&Call :N个IP %tph%tip.txt
+for /f "tokens=1 delims=," %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
+timeout /T 3 /NOBREAK >nul
+type nul > %tph%colo.txt
+FINDSTR "colo" %tph%temp\* >%tph%colo-ip.txt
+for /f %%a in (%tph%colo-ip.txt) do (
+	set str=%%a
+	set/a b+=1 
+	set str=!str:%tph%temp\=!
+	echo !str! >> %tph%colo.txt
+	TITLE %ipf% 成功获得：!b! 个IP回应
+	)
+type nul >%1
+for /f "tokens=1 delims=:" %%a in (%tph%colo.txt) do echo %%a>>%1 &TITLE 整理ip：%%a
+type %1 >%tph%tip.txt
+Call :N个IP %tph%tip.txt
+rd /s /q %tph%temp&&Call :N个IP %tph%tip.txt
 echo 完成第 !a! 次 www.cloudflare.com 连接测试；可用IP：!countIP! 个。
 set /a a=a+1
-goto CF可用IP
+goto :CF可用IP
 )
 goto :eof
 
