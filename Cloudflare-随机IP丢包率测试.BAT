@@ -114,7 +114,7 @@ if !a! LEQ 3 (
 if EXIST "%tph%temp" rd /s /q "%tph%temp"
 mkdir %tph%temp
 for /f "tokens=1 delims=," %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
-timeout /T 3 /NOBREAK >nul
+timeout /T 5 /NOBREAK >nul
 type nul > %tph%colo.txt
 FINDSTR "colo" %tph%temp\* >%tph%colo-ip.txt
 for /f %%a in (%tph%colo-ip.txt) do (
