@@ -25,22 +25,23 @@ set /p IP-CS=请选择IP段菜单：
 set tph=%tmp%\%IP-CS%\
 if EXIST %tph% rd /s /q %tph%
 mkdir %tph%
-if %IP-CS%==1 Set ip12=104.16&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==2 Set ip12=104.17&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==3 Set ip12=104.18&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==4 Set ip12=104.19&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==5 Set ip12=104.20&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==6 Set ip12=104.21&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==7 Set ip12=104.24&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==8 Set ip12=104.25&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==9 Set ip12=104.27&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==a Set ip12=162.159&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==b Set ip12=172.64&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==c Set ip12=172.67&Set ip31=0&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==d Set ip12=190.93&Set ip31=240&Set /a ip32=1+255&Call :生成IP
-if %IP-CS%==e Set ip12=198.41&Set ip31=128&Set /a ip32=1+255&Call :生成IP 
+if %IP-CS%==1 Set ip12=104.16&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==2 Set ip12=104.17&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==3 Set ip12=104.18&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==4 Set ip12=104.19&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==5 Set ip12=104.20&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==6 Set ip12=104.21&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==7 Set ip12=104.24&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==8 Set ip12=104.25&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==9 Set ip12=104.27&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==a Set ip12=162.159&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==b Set ip12=172.64&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==c Set ip12=172.67&Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==d Set ip12=190.93&Set ip31=240&Set /a ip32=1+255&Call :生成IP 1
+if %IP-CS%==e Set ip12=198.41&Set ip31=128&Set /a ip32=1+255&Call :生成IP 1
 if %IP-CS%==0 exit
 echo ==================================================================
+Call :删除重复行 %tph%ip.txt
 Call :N个IP %tph%ip.txt
 echo %countIP%个IP 测试连接CF节点可用IP…………
 set /a a=1
@@ -66,19 +67,31 @@ echo ==================================================================
 rd /s /q %tph%
 pause&goto :eof
 
-
 :生成IP
-set count=%ip31%
 type nul >%tph%ip.txt
+set /a numN=1
+:again
+if %numN% LEQ %1 (
+set count=%ip31%
 for /l %%i in (1,1,260)do (
 Set /a u1=!random!%%255
 TITLE  生成IP：%ip12%.!count!.!u1!
 echo %ip12%.!count!.!u1!>> %tph%ip.txt
 set /a count+=1
-if !count! equ %ip32% goto :eof
+if !count! equ %ip32% goto :mea
+	)
+:mea
+set /a numN+=1
+goto :again
 )
 goto :eof
 
+:删除重复行
+sort %1>%1_tmp.txt
+type nul > %1
+for /f "delims=" %%i in (%1_tmp.txt) do (if not defined %%i set %%i=A & TITLE %%i & echo %%i>>%1)
+del %1_tmp.txt >nul
+goto :eof
 
 :取前N个
 type %1>%tph%_tmp.txt
@@ -117,7 +130,7 @@ set /a n1+=1
 )
 if EXIST "%tph%tmp" rd /s /q "%tph%tmp"
 more %tph%ping.csv>%tph%temp.csv
-cls
+cls 
 echo ==================================================================
 echo IP地址		发送	接收	平均	最少	最多	
 echo ==================================================================
@@ -154,7 +167,7 @@ if !a! LEQ 3 (
 if EXIST "%tph%temp" rd /s /q "%tph%temp"
 mkdir %tph%temp
 for /f "tokens=1 delims=," %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
-timeout /T 3 /NOBREAK >nul
+timeout /T 5 /NOBREAK >nul
 type nul > %tph%colo.txt
 FINDSTR "colo" %tph%temp\* >%tph%colo-ip.txt
 for /f %%a in (%tph%colo-ip.txt) do (
