@@ -19,8 +19,12 @@ Call :N个IP %tph%ip.txt
 echo ==================================================================
 echo %countIP%个IP 测试连接CF节点可用IP…………
 set /a a=1
-Call :CF可用IP  %tph%ip.txt
+Call :wwwCFIP %tph%ip.txt
+echo ==================================================================
+set /a a=1
+Call :speedCFIP %tph%ip.txt
 Call :N个IP %tph%ip.txt
+type %tph%ip.txt>%tph%tip.txt
 echo ==================================================================
 title 测试%countIP% CF节点ICMP 丢包率
 echo 测试%countIP% CF节点ICMP 丢包率
@@ -33,8 +37,8 @@ Set tip=%countIP%
 Call :N个IP %tph%SortIP.csv
 echo CF可用IP %tip% 个；CF节点ICMP测试，没有丢包的 %countIP% 个IP。
 title CF可用IP %tip% 个； CF节点ICMP测试，没有丢包的 %countIP% 个IP。
-echo CF可用IP,响应时间 > %numN%_%countIP%个CF可用IP.csv
-type %tph%SortIP.csv >> %numN%_%countIP%个CF可用IP.csv
+echo CF可用IP,响应时间 > %numN%_%countIP%个CF可用_IP.txt
+type %tph%SortIP.csv >> %numN%_%countIP%个CF可用_IP.txt
 echo ==================================================================
 Call :meta3
 echo ==================================================================
@@ -69,7 +73,7 @@ set /a n2=!n1!*30
 if !n2! GTR %countIP% set /a n2=%countIP%
 title 已测试 !n2!/%countIP% CF节点ICMP 丢包率
 if EXIST %%i more %%i>%tph%a.txt
-if EXIST %tph%a.txt fping -f %tph%a.txt -c 10 --interval=0 -s >%tph%temp.csv
+if EXIST %tph%a.txt fping -f %tph%a.txt -c 5 --interval=0 -s >%tph%temp.csv
 if EXIST %tph%temp.csv more +1 %tph%temp.csv>>%tph%ping.csv
 if EXIST %%i del %%i
 if EXIST %tph%a.txt del %tph%a.txt
@@ -83,7 +87,7 @@ echo IP地址		发送	接收	平均	最少	最多
 echo ==================================================================
 setlocal
 del %tph%ping.csv
-for /f "tokens=1-7 delims=," %%a in (%tph%temp.csv) do (if %%d equ 10 (echo %%a,%%b,%%c,%%d,%%e,%%f,%%g>>%tph%ping.csv))
+for /f "tokens=1-7 delims=," %%a in (%tph%temp.csv) do (if %%d equ 5 (echo %%a,%%b,%%c,%%d,%%e,%%f,%%g>>%tph%ping.csv))
 del %tph%temp.csv
 for /F "tokens=1-7 delims=," %%a in (%tph%ping.csv) do set "a[%%e,%%f,%%g,%%a,%%b,%%c,%%d]=%%"
 del %tph%ping.csv
@@ -109,29 +113,37 @@ set cfip=%%i
 )
 goto :eof
 
-:CF可用IP
+:wwwCFIP
 if !a! LEQ 3 (
 if EXIST "%tph%temp" rd /s /q "%tph%temp"
 mkdir %tph%temp
 for /f "tokens=1 delims=," %%a in (%1) do (start /b curl --resolve www.cloudflare.com:443:%%a https://www.cloudflare.com/cdn-cgi/trace -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 && TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
 timeout /T 5 /NOBREAK >nul
-type nul > %tph%colo.txt
-FINDSTR "colo" %tph%temp\* >%tph%colo-ip.txt
-for /f %%a in (%tph%colo-ip.txt) do (
-	set str=%%a
-	set/a b+=1 
-	set str=!str:%tph%temp\=!
-	echo !str! >> %tph%colo.txt
-	TITLE %ipf% 成功获得：!b! 个IP回应
-	)
-type nul >%1
-for /f "tokens=1 delims=:" %%a in (%tph%colo.txt) do echo %%a>>%1 &TITLE 整理ip：%%a
-type %1 >%tph%tip.txt
-Call :N个IP %tph%tip.txt
-rd /s /q %tph%temp&&Call :N个IP %tph%tip.txt
+dir /b %tph%temp\*> %tph%colo-ip.txt
+for /f %%a in (%tph%colo-ip.txt) do (TITLE 成功连接IP:%%a&&FINDSTR "FRA SEA" %tph%temp\%%a>nul||del %tph%temp\%%a )
+dir /b %tph%temp\*> %1
+rem rd /s /q %tph%temp
+Call :N个IP %1
 echo 完成第 !a! 次 www.cloudflare.com 连接测试；可用IP：!countIP! 个。
 set /a a=a+1
-goto :CF可用IP
+goto :wwwCFIP
+)
+goto :eof
+
+:speedCFIP
+if !a! LEQ 3 (
+if EXIST "%tph%temp" rd /s /q "%tph%temp"
+mkdir %tph%temp
+for /f "tokens=1 delims=," %%a in (%1) do (start /b curl --resolve speed.cloudflare.com:443:%%a https://speed.cloudflare.com/meta -o %tph%temp\%%a -s --connect-timeout 1 --max-time 2 &&  TITLE CF节点第 !a! 批次连接测试；CF可用IP:%%a)
+timeout /T 5 /NOBREAK >nul
+dir /b %tph%temp\*> %tph%colo-ip.txt
+for /f %%a in (%tph%colo-ip.txt) do (TITLE 成功连接IP:%%a&&FINDSTR "FRA SEA" %tph%temp\%%a>nul||del %tph%temp\%%a )
+dir /b %tph%temp\*> %1
+rem rd /s /q %tph%temp
+Call :N个IP %1
+echo 完成第 !a! 次 speed.cloudflare.com 连接测试；可用IP：!countIP! 个
+set /a a=a+1
+goto :speedCFIP
 )
 goto :eof
 
