@@ -41,7 +41,7 @@ goto :eof
 :pings
 type nul >%tph%temp.csv
 set /a n=0
-for /f %%i in ('type %1') do (ping -n 1 -w 20 %%i | find "时间=" >> %tph%temp.csv&&set /a n+=1&&TITLE  ping %countIP% 个IP：%%i/!n!)
+for /f %%i in ('type %1') do (ping -n 1 -w 10 %%i | find "时间=" >> %tph%temp.csv&&set /a n+=1&&TITLE  ping %countIP% 个IP：%%i/!n!)
 type nul > %1
 for /f "tokens=1-5 delims= " %%a in (%tph%temp.csv) do (echo %%a,%%b,%%c,%%d,%%e>>%1)
 type nul >%tph%temp.csv
@@ -89,8 +89,8 @@ type nul > %tph%_tmp.txt
 set /a men=0&set /a men1=0
 for /f "tokens=1-2 delims=," %%a in (%1) do (
 set /a men1+=1
-tcping -n 1 -w 0.22 %%a %CFipPort% >NUL&&echo %%a,	%CFipPort%,%%b&&echo %%a,%%b>>%tph%_tmp.txt&&set /a men+=1&&TITLE 已测试：!men!/%countIP% 连接成功：!men!
-if !men1! GEQ 32 timeout /T 5 /NOBREAK >NUL 2>NUL&&set /a men1=1
+tcping -n 1 -s %%a %CFipPort% >NUL&&echo %%a,	%CFipPort%,%%b&&echo %%a,%%b>>%tph%_tmp.txt&&set /a men+=1&&TITLE 已测试：!men!/%countIP% 连接成功：!men!
+if !men1! GEQ 32 timeout /T 2 /NOBREAK >NUL 2>NUL&&set /a men1=1
 )
 type %tph%_tmp.txt > %1
 goto :eof
