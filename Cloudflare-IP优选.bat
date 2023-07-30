@@ -3,7 +3,6 @@ setlocal enabledelayedexpansion
 set tph=%tmp%\cfip\
 if EXIST %tph% rd /s /q %tph%
 mkdir %tph%
-type nul >%tph%ip.txt
 echo ==================================================================
 Call :dnsip
 echo ==================================================================
@@ -19,7 +18,6 @@ Call :N个IP %tph%ip.txt
 echo  CFIP 443端口测试成功的 %countIP% 个IP
 TITLE CFIP 443端口测试成功的 %countIP% 个IP
 echo ==================================================================
-
 pause
 goto :eof
 
