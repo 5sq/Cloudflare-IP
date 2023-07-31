@@ -5,23 +5,23 @@ set tph=%tmp%\%numN%\
 if EXIST %tph% rd /s /q %tph%
 mkdir %tph%
 ::==================================================================
-rem ¿ÉÒÔÔö¼Ó»òÉ¾³ýÄãÒª½âÎöµÄÓòÃû
+rem å¯ä»¥å¢žåŠ æˆ–åˆ é™¤ä½ è¦è§£æžçš„åŸŸå
 Set CFname=www.cloudflare.com dash.cloudflare.com blog.cloudflare.com
-rem ¿ÉÒÔ×Ô¶¨ÒåÏÂÃæµÄ²âÊÔ¶Ë¿Ú
+rem å¯ä»¥è‡ªå®šä¹‰ä¸‹é¢çš„æµ‹è¯•ç«¯å£
 set CFipPort=443
 rem  ==================================================================
 Call :dnsip
-call :N¸öIP %tph%ip.txt
+call :Nä¸ªIP %tph%ip.txt
 echo ==================================================================
-set /a ti=%countIP%/5/50
-echo tcping %countIP% ¸öIP´óÔ¼ÐèÒª%ti%·ÖÖÓ¡­¡­¡­¡­
+set /a ti=%countIP%/4/60
+echo tcping %countIP% ä¸ªIPå¤§çº¦éœ€è¦%ti%åˆ†é’Ÿâ€¦â€¦â€¦â€¦
 echo ==================================================================
 Call :tcpingCF  %tph%ip.txt
-Call :N¸öIP %tph%ip.txt
+Call :Nä¸ªIP %tph%ip.txt
 type %tph%ip.txt
 echo ==================================================================
-echo  CFIP 443¶Ë¿Ú²âÊÔ³É¹¦µÄ %countIP% ¸öIP
-TITLE CFIP 443¶Ë¿Ú²âÊÔ³É¹¦µÄ %countIP% ¸öIP
+echo  CFIP 443ç«¯å£æµ‹è¯•æˆåŠŸçš„ %countIP% ä¸ªIP
+TITLE CFIP 443ç«¯å£æµ‹è¯•æˆåŠŸçš„ %countIP% ä¸ªIP
 echo ==================================================================
 rd /s /q %tph%
 pause
@@ -31,7 +31,7 @@ pause&goto :eof
 :tcpingCF
 type nul >%tph%temp.csv
 set /a n=0&set /a men1=0
-for /f %%i in ('type %1') do (tcping -n 1 -w 0.22 -s %%i %CFipPor% | find "open" >> %tph%temp.csv&&set /a n+=1&&TITLE  tcping 443¶Ë¿ÚÁ¬½Ó³É¹¦£º%%i/!n!
+for /f %%i in ('type %1') do (tcping -n 1 -w 0.22 -s %%i %CFipPor% | find "open" >> %tph%temp.csv&&set /a n+=1&&TITLE  tcping 443ç«¯å£è¿žæŽ¥æˆåŠŸï¼š%%i/!n!
 set /a men1+=1
 if !men1! GEQ 32 timeout /T 2 /NOBREAK >NUL 2>NUL&&set /a men1=1
 )
@@ -50,12 +50,12 @@ echo ==================================================================
 set /a n=0
 type nul >%tph%ip.txt
 for %%a in (%CFname%) do (
-Call :nslookupIP %%a&&set /a n+=1&&echo DNS²éÑ¯µ½µÄ %%a IP¶Î !ip12!
-Set ip31=0&Set /a ip32=1+255&Call :Éú³ÉIP 1
+Call :nslookupIP %%a&&set /a n+=1&&echo DNSæŸ¥è¯¢åˆ°çš„ %%a IPæ®µ !ip12!
+Set ip31=0&Set /a ip32=1+255&Call :ç”ŸæˆIP 1
 )
 goto :eof
 
-:È¡Ç°N¸ö
+:å–å‰Nä¸ª
 type %1>%tph%_tmp.txt
 type nul > %1
 set count=0
@@ -66,14 +66,14 @@ if !count! equ %2 goto :eof
 )
 goto :eof
 
-:Éú³ÉIP
+:ç”ŸæˆIP
 set /a numN=1
 :again
 if %numN% LEQ %1 (
 set count=%ip31%
 for /l %%i in (1,1,260)do (
 Set /a u1=!random!%%255
-TITLE  Éú³ÉIP£º%ip12%.!count!.!u1!
+TITLE  ç”ŸæˆIPï¼š%ip12%.!count!.!u1!
 echo %ip12%.!count!.!u1!>> %tph%ip.txt
 set /a count+=1
 if !count! equ %ip32% goto :mea
@@ -84,7 +84,7 @@ goto :again
 )
 goto :eof
 
-:N¸öIP
+:Nä¸ªIP
 set countIP=0
 for /f "delims=" %%a in (%1) do (set /a countIP+=1)
 goto :eof
