@@ -13,20 +13,23 @@ set CFipPort=443
 Call :dnsip
 call :N个IP %tph%ip.txt
 echo ==================================================================
+set /a ti=%countIP%/4/60
+echo ping %countIP% 个IP大约需要%ti%分钟…………
+echo ==================================================================
 Call :pings  %tph%ip.txt
 call :N个IP %tph%ip.txt
-echo ping 通的 %countIP% 个IP。
+echo ping 通的 %countIP% 个IP。选取前32个IP tcping %CFipPort% 端口
 echo ==================================================================
 call :取前N个 %tph%ip.txt 32
-Call :CFPort %tph%ip.txt
+Call :tcpingCF %tph%ip.txt
+type %tph%ip.txt
 echo ==================================================================
 Call :N个IP %tph%ip.txt
-echo  CFIP 443端口测试成功的 %countIP% 个IP
-TITLE CFIP 443端口测试成功的 %countIP% 个IP
+echo  tcping %CFipPort%  端口测试成功的 %countIP% 个IP
+TITLE tcping %CFipPort%  端口测试成功的 %countIP% 个IP
 echo ==================================================================
 rd /s /q %tph%
-pause
-goto :eof
+pause&goto :eof
 
 :dnsip
 echo ==================================================================
@@ -41,7 +44,7 @@ goto :eof
 :pings
 type nul >%tph%temp.csv
 set /a n=0
-for /f %%i in ('type %1') do (ping -n 1 -w 10 %%i | find "时间=" >> %tph%temp.csv&&set /a n+=1&&TITLE  ping %countIP% 个IP：%%i/!n!)
+for /f %%i in ('type %1') do (ping -n 1 -w 10 %%i | find "时间=" >> %tph%temp.csv&&set /a n+=1&&TITLE  ping %countIP% 个IP，成功：%%i/!n!)
 type nul > %1
 for /f "tokens=1-5 delims= " %%a in (%tph%temp.csv) do (echo %%a,%%b,%%c,%%d,%%e>>%1)
 type nul >%tph%temp.csv
@@ -84,15 +87,21 @@ set countIP=0
 for /f "delims=" %%a in (%1) do (set /a countIP+=1)
 goto :eof
 
-:CFPort
-type nul > %tph%_tmp.txt
-set /a men=0&set /a men1=0
-for /f "tokens=1-2 delims=," %%a in (%1) do (
+:tcpingCF
+type nul >%tph%temp.csv
+set /a n=0&set /a men1=0
+for /f "tokens=1-2 delims=," %%i in ('type %1') do (tcping -n 1 -w 0.23 -s %%i %CFipPort% | find "open" >> %tph%temp.csv&&set /a n+=1&&TITLE  tcping %CFipPort%端口连接成功：%%i/!n!
 set /a men1+=1
-tcping -n 1 -s %%a %CFipPort% >NUL&&echo %%a,	%CFipPort%,%%b&&echo %%a,%%b>>%tph%_tmp.txt&&set /a men+=1&&TITLE 已测试：!men!/%countIP% 连接成功：!men!
 if !men1! GEQ 32 timeout /T 2 /NOBREAK >NUL 2>NUL&&set /a men1=1
 )
-type %tph%_tmp.txt > %1
+type nul > %1
+for /f "tokens=1-8 delims= " %%a in (%tph%temp.csv) do (echo %%a,%%b,%%c,%%d,%%e,%%f,%%g,%%h>>%1)
+type nul >%tph%temp.csv
+for /f "tokens=1-8 delims=," %%a in (%1) do (echo %%h,%%b>>%tph%temp.csv)
+sort %tph%temp.csv >%1&type nul >%tph%temp.csv
+for /f "tokens=1-2 delims=," %%a in (%1) do (echo %%b,	%%a>>%tph%temp.csv)
+type nul >%1
+for /f "tokens=1-2 delims=:" %%a in (%tph%temp.csv) do (echo %%a,	%%b>>%1)
 goto :eof
 
 :nslookupIP
