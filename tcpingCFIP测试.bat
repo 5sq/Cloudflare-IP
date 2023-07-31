@@ -55,17 +55,6 @@ Set ip31=0&Set /a ip32=1+255&Call :生成IP 1
 )
 goto :eof
 
-:取前N个
-type %1>%tph%_tmp.txt
-type nul > %1
-set count=0
-for /f "delims=" %%a in (%tph%_tmp.txt) do (
-echo %%a>> %1
-set /a count+=1
-if !count! equ %2 goto :eof
-)
-goto :eof
-
 :生成IP
 set /a numN=1
 :again
