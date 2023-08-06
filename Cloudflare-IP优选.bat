@@ -18,7 +18,7 @@ echo ping %countIP% 个IP大约需要%ti%分钟…………
 echo ==================================================================
 Call :pings  %tph%ip.txt
 call :N个IP %tph%ip.txt
-echo ping 通的 %countIP% 个IP。选取前32个IP tcping %CFipPort% 端口
+echo ping 通的 %countIP% 个IP。选取最快的32个IP tcping %CFipPort% 端口
 echo ==================================================================
 call :取前N个 %tph%ip.txt 32
 Call :tcpingCF %tph%ip.txt
@@ -43,8 +43,8 @@ goto :eof
 
 :pings
 type nul >%tph%temp.csv
-set /a n=0
-for /f %%i in ('type %1') do (ping -n 1 -w 10 %%i | find "时间=" >> %tph%temp.csv&&set /a n+=1&&TITLE  ping %countIP% 个IP，成功：%%i/!n!)
+set /a n=0&set /a n1=0
+for /f %%i in ('type %1') do (set /a n1+=1&ping -n 1 -w 1 %%i | find "时间=" >> %tph%temp.csv&&set /a n+=1&&TITLE  ping !n1! 个IP，成功：%%i（!n!）)
 type nul > %1
 for /f "tokens=1-5 delims= " %%a in (%tph%temp.csv) do (echo %%a,%%b,%%c,%%d,%%e>>%1)
 type nul >%tph%temp.csv
@@ -89,8 +89,8 @@ goto :eof
 
 :tcpingCF
 type nul >%tph%temp.csv
-set /a n=0&set /a men1=0
-for /f "tokens=1-2 delims=," %%i in ('type %1') do (tcping -n 1 -w 0.23 -s %%i %CFipPort% | find "open" >> %tph%temp.csv&&set /a n+=1&&TITLE  tcping %CFipPort%端口连接成功：%%i/!n!
+set /a n=0&set /a men1=0&set n1=0
+for /f "tokens=1-2 delims=," %%i in ('type %1') do (set /a n1+=1&tcping -n 1 -w 0.23 -s %%i %CFipPort% | find "open" >> %tph%temp.csv&&set /a n+=1&&TITLE  tcping !n1!个IP %CFipPort%端口连接成功：%%i（!n!）
 set /a men1+=1
 if !men1! GEQ 32 timeout /T 2 /NOBREAK >NUL 2>NUL&&set /a men1=1
 )
@@ -109,3 +109,4 @@ for /f "tokens=1,2 delims=. skip=5" %%a in ('nslookup %1')do (
     set "ip12=%%a.%%b"
 )
 goto :eof
+
