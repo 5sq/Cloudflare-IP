@@ -90,7 +90,7 @@ goto :eof
 :tcpingCF
 type nul >%tph%temp.csv
 set /a n=0&set /a men1=0&set n1=0
-for /f "tokens=1-2 delims=," %%i in ('type %1') do (set /a n1+=1&tcping -n 1 -w 0.23 -s %%i %CFipPort% | find "open" >> %tph%temp.csv&&set /a n+=1&&TITLE  tcping !n1!个IP %CFipPort%端口连接成功：%%i（!n!）
+for /f "tokens=1-2 delims=," %%i in ('type %1') do (set /a n1+=1&tcping -n 1 -w 0.23 -s %%i %CFipPort% | find "open" >> %tph%temp.csv&&set /a n+=1&&TITLE  tcping !n1!个IP %CFipPort%端口；连接成功：%%i（!n!个IP）
 set /a men1+=1
 if !men1! GEQ 32 timeout /T 2 /NOBREAK >NUL 2>NUL&&set /a men1=1
 )
