@@ -13,7 +13,7 @@ set CFipPort=443
 Call :dnsip
 call :N个IP %tph%ip.txt
 echo ==================================================================
-set /a ti=%countIP%/4/60
+set /a ti=%countIP%/4/60+1
 echo ping %countIP% 个IP大约需要%ti%分钟…………
 echo ==================================================================
 Call :pings  %tph%ip.txt
